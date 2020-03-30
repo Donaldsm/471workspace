@@ -4,7 +4,7 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
 import {Routes} from "./routes";
-import {User} from "./entity/User";
+import {Users} from "./entity/Users";
 
 createConnection().then(async connection => {
 
@@ -32,12 +32,12 @@ createConnection().then(async connection => {
     app.listen(3000);
 
     // insert new users for test
-    await connection.manager.save(connection.manager.create(User, {
+    await connection.manager.save(connection.manager.create(Users, {
         firstName: "Timber",
         lastName: "Saw",
         age: 27
     }));
-    await connection.manager.save(connection.manager.create(User, {
+    await connection.manager.save(connection.manager.create(Users, {
         firstName: "Phantom",
         lastName: "Assassin",
         age: 24
