@@ -1,12 +1,19 @@
-import {Entity, ManyToMany, JoinTable} from "typeorm";
+import {Entity, ManyToMany, OneToMany, Column, JoinTable, Unique, PrimaryGeneratedColumn } from "typeorm";
 import { Manufacturers } from "./Manufacturers";
 import { Merchants } from "./Merchants";
 
 @Entity()
 export class BuysFrom {
-    @ManyToMany(type => Manufacturers, manufacturer => manufacturer.manuid)
+
+    @PrimaryGeneratedColumn()
+    buysFromId: number;
+
+    @OneToMany(type => Manufacturers, manufacturers => manufacturers.manuid)
+    @JoinTable()
     manuid: Manufacturers[];
 
-    @ManyToMany(type => Merchants, merchant => merchant.mid)
+    @OneToMany(type => Merchants, merchants => merchants.mid)
+    @JoinTable()
     mid: Merchants[];
+
 }

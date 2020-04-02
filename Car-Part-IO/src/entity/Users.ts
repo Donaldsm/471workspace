@@ -12,22 +12,22 @@ export class Users {
     @Column()
     lastName: string;
 
-    @Column()
+    @Column({nullable: true})
     dob: string;
 
-    @Column()
+    @Column({nullable: true})
     email: string;
 
-    @Column()
+    @Column({nullable: true})
     streetNumber: number;
 
-    @Column()
+    @Column({nullable: true})
     streetName: string;
 
-    @Column()
+    @Column({nullable: true})
     stateProvince: string;
 
-    @Column()
+    @Column({nullable: true})
     postalZip: string;
 
 }
