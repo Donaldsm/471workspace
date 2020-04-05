@@ -1,21 +1,27 @@
 import { Entity, Column, ManyToOne, ManyToMany, JoinTable, PrimaryGeneratedColumn } from "typeorm";
 import { Parts } from "./Parts";
-import { PurchaseOrders } from "./PurchaseOrders";
+import { Users } from "./Users";
 
 @Entity()
 export class PartsBought {
 
     @PrimaryGeneratedColumn()
-    historyId: number;
+    history_id: number;
 
-    @ManyToMany(type => Parts, parts => parts.partNumber)
-    @JoinTable()
-    parts: Parts[];
+    @ManyToMany(type => Parts, part => part.inventory)
+    @JoinTable({
+        name: "sold_by",
+        joinColumn: {
+            name: "history_id",
+            referencedColumnName: "history_id"
+        },
+        inverseJoinColumn: {
+            name: "part_number",
+            referencedColumnName: "part_number"
+        }
+    })
+    partNumber: Parts[];
 
-    @ManyToOne(type => PurchaseOrders, purchaseOrder => purchaseOrder.poNumber)
-    @JoinTable()
-    orderNum: PurchaseOrders;
-
-    @Column()
-    qty: number;
+    @ManyToOne(type => Users, users => users.id)
+    order_num: Users;
 }

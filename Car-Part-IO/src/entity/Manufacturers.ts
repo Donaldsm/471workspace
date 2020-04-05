@@ -1,15 +1,45 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, JoinTable} from "typeorm";
 import { type } from "os";
+import {Merchants} from "./Merchants";
+import {Parts} from "./Parts";
 
 @Entity()
 export class Manufacturers {
 
     @PrimaryGeneratedColumn()
-    manuid: number;
+    manu_id: number;
 
     @Column()
     name: string;
 
-    @Column()
+    @Column({nullable: true})
     contact: string;
+
+    @ManyToMany(type => Merchants, merchants => merchants.mid)
+    @JoinTable({
+        name:"buys_from",
+        joinColumn: {
+            name: "manu_id",
+            referencedColumnName: "manu_id"
+        },
+        inverseJoinColumn: {
+            name: "mid",
+            referencedColumnName: "mid"
+        } 
+    })
+    mid: Merchants[];
+
+    @ManyToMany(type => Parts)
+    @JoinTable({
+        name:"makes",
+        joinColumn: {
+            name: "manu_id",
+            referencedColumnName: "manu_id"
+        },
+        inverseJoinColumn: {
+            name: "part_number",
+            referencedColumnName: "part_number"
+        }
+    })
+    part: Parts[];
 }

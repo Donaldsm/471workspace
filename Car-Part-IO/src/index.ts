@@ -34,12 +34,12 @@ createConnection().then(async connection => {
 
     // insert new users for test
     await connection.manager.save(connection.manager.create(Users, {
-        firstName: "Timber",
-        lastName: "Saw"
+        first_name: "Timber",
+        last_name: "Saw"
     }));
     await connection.manager.save(connection.manager.create(Users, {
-        firstName: "Phantom",
-        lastName: "Assassin"
+        first_name: "Phantom",
+        last_name: "Assassin"
     }));
     await connection.manager.save(connection.manager.create(Parts, {
         name: "ECM"

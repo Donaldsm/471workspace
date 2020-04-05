@@ -1,4 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany,JoinTable} from "typeorm";
+import { PartsBought } from "./PartsBought";
+import { Vehicles } from "./Vehicles";
+import { Videos } from "./Videos";
+import { PurchaseOrders } from "./PurchaseOrders";
+
 
 @Entity()
 export class Users {
@@ -7,10 +12,10 @@ export class Users {
     id: number;
 
     @Column()
-    firstName: string;
+    first_name: string;
 
     @Column()
-    lastName: string;
+    last_name: string;
 
     @Column({nullable: true})
     dob: string;
@@ -19,15 +24,37 @@ export class Users {
     email: string;
 
     @Column({nullable: true})
-    streetNumber: number;
+    street_number: number;
 
     @Column({nullable: true})
-    streetName: string;
+    street_name: string;
 
     @Column({nullable: true})
-    stateProvince: string;
+    state_province: string;
 
     @Column({nullable: true})
-    postalZip: string;
+    postal_zip: string;
 
+    @OneToMany(type => PartsBought, partsbought => partsbought.history_id)
+    purchase_history: PartsBought;
+
+    @OneToMany(type => PurchaseOrders, purchaseOrders => purchaseOrders.po_number)
+    purchase_orders: PurchaseOrders[];
+
+    @OneToMany(type => Vehicles, vehicles => vehicles.vin)
+    vehicles: Vehicles[];
+
+    @ManyToMany(type => Videos, videos => videos.url)
+    @JoinTable({
+        name: "Watches",
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "video",
+            referencedColumnName: "url"
+        }
+    })
+    videosWatched: Videos[];
 }

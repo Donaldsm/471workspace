@@ -5,7 +5,7 @@ import { Users } from "./Users";
 export class PurchaseOrders {
 
     @PrimaryGeneratedColumn()
-    poNumber: number;
+    po_number: number;
 
     @Column()
     date: string;
