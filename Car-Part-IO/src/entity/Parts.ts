@@ -7,12 +7,15 @@ export class Parts {
     partNumber: number;
 
     @Column()
+    name: string;
+
+    @Column({nullable: true})
     description: string;
 
-    @Column()
+    @Column({nullable: true})
     category: string;
 
-    @Column()
+    @Column({nullable: true})
     type: string;
 
     // the relationship between parts and Inventory
