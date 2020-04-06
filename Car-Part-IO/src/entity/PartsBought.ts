@@ -8,20 +8,12 @@ export class PartsBought {
     @PrimaryGeneratedColumn()
     history_id: number;
 
-    @ManyToMany(type => Parts, part => part.inventory)
-    @JoinTable({
-        name: "sold_by",
-        joinColumn: {
-            name: "history_id",
-            referencedColumnName: "history_id"
-        },
-        inverseJoinColumn: {
-            name: "part_number",
-            referencedColumnName: "part_number"
-        }
-    })
-    partNumber: Parts[];
+    @ManyToOne(type => Parts, part => part.history)
+    part_Number: Parts;
 
-    @ManyToOne(type => Users, users => users.id)
+    @ManyToOne(type => Users, users => users.purchase_orders)
     order_num: Users;
+
+    @Column({nullable:false})
+    qty: number;
 }

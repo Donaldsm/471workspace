@@ -15,7 +15,7 @@ export class Manufacturers {
     @Column({nullable: true})
     contact: string;
 
-    @ManyToMany(type => Merchants, merchants => merchants.mid)
+    @ManyToMany(type => Merchants, merchants => merchants.manuid)
     @JoinTable({
         name:"buys_from",
         joinColumn: {
@@ -29,7 +29,7 @@ export class Manufacturers {
     })
     mid: Merchants[];
 
-    @ManyToMany(type => Parts)
+    @ManyToMany(type => Parts, parts => parts.manufacturer)
     @JoinTable({
         name:"makes",
         joinColumn: {

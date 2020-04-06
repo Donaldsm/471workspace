@@ -1,7 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany} from "typeorm";
 import { Inventory } from "./Inventory";
 import {Manufacturers} from "./Manufacturers";
 import { Vehicles } from "./Vehicles";
+import { PartsBought } from "./PartsBought";
 
 @Entity()
 export class Parts {
@@ -21,7 +22,7 @@ export class Parts {
     type: string;
 
 
-    @ManyToMany(type => Manufacturers, manufacturers => manufacturers.manu_id)
+    @ManyToMany(type => Manufacturers, manufacturers => manufacturers.part)
     @JoinTable({
         name: "makes",
         joinColumn: {
@@ -35,21 +36,10 @@ export class Parts {
     })
     manufacturer: Manufacturers[];
     
-    @ManyToMany(type => Inventory, inventory => inventory.inventory_id)
-    @JoinTable({
-        name: "soldby",
-        joinColumn: {
-            name: "part_number",
-            referencedColumnName: "part_number"
-        },
-        inverseJoinColumn: {
-            name: "inventory_id",
-            referencedColumnName: "inventory_id"
-        }
-    })
+    @OneToMany(type => Inventory, inventory => inventory.part_number)
     inventory: Inventory[];
 
-    @ManyToMany(type => Vehicles, vehicles => vehicles.vin)
+    @ManyToMany(type => Vehicles, vehicles => vehicles.parts)
     @JoinTable({
         name: "part_of",
         joinColumn: {
@@ -62,5 +52,8 @@ export class Parts {
         }
     })
     vehicles: Vehicles[];
+
+    @OneToMany(type => PartsBought, partsBought => partsBought.part_Number)
+    history: PartsBought[];
 
 }

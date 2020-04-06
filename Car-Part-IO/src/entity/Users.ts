@@ -35,13 +35,13 @@ export class Users {
     @Column({nullable: true})
     postal_zip: string;
 
-    @OneToMany(type => PartsBought, partsbought => partsbought.history_id)
-    purchase_history: PartsBought;
+    @OneToMany(type => PartsBought, partsbought => partsbought.order_num)
+    purchase_history: PartsBought[];
 
-    @OneToMany(type => PurchaseOrders, purchaseOrders => purchaseOrders.po_number)
+    @OneToMany(type => PurchaseOrders, purchaseOrders => purchaseOrders.user)
     purchase_orders: PurchaseOrders[];
 
-    @OneToMany(type => Vehicles, vehicles => vehicles.vin)
+    @OneToMany(type => Vehicles, vehicles => vehicles.owner)
     vehicles: Vehicles[];
 
     @ManyToMany(type => Videos, videos => videos.url)

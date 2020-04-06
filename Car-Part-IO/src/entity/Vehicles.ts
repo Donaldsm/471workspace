@@ -36,6 +36,6 @@ export class Vehicles {
     })
     parts: Parts[];
 
-    @ManyToOne(type => Users, users => users.id)
+    @ManyToOne(type => Users, users => users.vehicles)
     owner: Users;
 }

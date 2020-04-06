@@ -6,6 +6,7 @@ import {Request, Response} from "express";
 import {Routes} from "./routes";
 import {Users} from "./entity/Users";
 import {Parts} from "./entity/Parts";
+import { Inventory } from "./entity/Inventory";
 
 createConnection().then(async connection => {
 
@@ -44,6 +45,7 @@ createConnection().then(async connection => {
     await connection.manager.save(connection.manager.create(Parts, {
         name: "ECM"
     }));
+
 
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
 

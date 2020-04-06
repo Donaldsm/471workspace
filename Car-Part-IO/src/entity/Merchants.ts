@@ -27,7 +27,7 @@ export class Merchants {
     @Column()
     type: string;
 
-    @ManyToMany(type => Manufacturers, manufacturers => manufacturers.manu_id)
+    @ManyToMany(type => Manufacturers, manufacturers => manufacturers.mid)
     @JoinTable({
         name:"buys_from",
         joinColumn: {
@@ -41,7 +41,7 @@ export class Merchants {
     })
     manuid: Manufacturers[];
 
-    @ManyToMany(type => Shippers, shippers => shippers.sid)
+    @ManyToMany(type => Shippers, shippers => shippers.merchants)
     @JoinTable({
         name:"merch_uses",
         joinColumn: {
@@ -55,7 +55,7 @@ export class Merchants {
     })
     shippers: Shippers[];
 
-    @ManyToMany(type => Locations, locations => locations.lid)
+    @ManyToMany(type => Locations, locations => locations.merchants)
     @JoinTable({
         name: "merch_locations",
         joinColumn: {

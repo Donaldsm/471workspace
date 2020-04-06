@@ -10,6 +10,6 @@ export class PurchaseOrders {
     @Column()
     date: string;
 
-    @ManyToOne(type => Users, users => users.id)
+    @ManyToOne(type => Users, users => users.purchase_orders)
     user: Users;
 }

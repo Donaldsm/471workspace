@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable,OneToMany} from "typeorm";
 import { Inventory } from "./Inventory";
 import { Merchants } from "./Merchants";
 import { Shippers } from "./Shipppers";
@@ -24,21 +24,10 @@ export class Locations {
     @Column()
     postal_zip: string; // sorry for the naming just trying to say it could be either
 
-    @ManyToMany(type => Inventory, inventory => inventory.inventory_id)
-    @JoinTable({
-        name:"location_inventory",
-        joinColumn:{
-            name: "lid",
-            referencedColumnName: "lid"
-        },
-        inverseJoinColumn:{
-            name: "inventory_id",
-            referencedColumnName: "inventory_id"
-        }
-    })
+    @OneToMany(type => Inventory, inventory => inventory.lid)
     inventory: Inventory[];
 
-    @ManyToMany(type => Merchants, merchants => merchants.mid)
+    @ManyToMany(type => Merchants, merchants => merchants.locations)
     @JoinTable({
         name: "merch_locations",
         joinColumn: {
@@ -52,7 +41,7 @@ export class Locations {
     })
     merchants: Merchants[];
 
-    @ManyToMany(type => Shippers, shipper => shipper.sid)
+    @ManyToMany(type => Shippers, shipper => shipper.pickups)
     @JoinTable({
         name: "ships_from",
         joinColumn: {

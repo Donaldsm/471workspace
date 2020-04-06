@@ -13,9 +13,9 @@ export class Videos {
 
     @OneToOne(type => Parts, parts => parts.part_number)
     @JoinColumn()
-    part_num: Parts;
+    part: Parts;
 
-    @ManyToMany(type => Users, users => users.id)
+    @ManyToMany(type => Users)
     @JoinTable({
         name: "watches",
         joinColumn: {

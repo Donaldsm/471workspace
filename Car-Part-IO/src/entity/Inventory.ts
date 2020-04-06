@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinTable } from "typeorm";
 import { Parts } from "./Parts";
 import { Locations } from "./Locations";
 
@@ -8,33 +8,11 @@ export class Inventory {
     @PrimaryGeneratedColumn()
     inventory_id: number;
 
-    @ManyToMany(type => Locations, location => location.inventory)
-    @JoinTable({
-        name:"location_inventory",
-        joinColumn:{
-            name: "inventory_id",
-            referencedColumnName: "inventory_id"
-        },
-        inverseJoinColumn:{
-            name: "lid",
-            referencedColumnName: "lid"
-        }
-    })
-    lid: Locations[];
+    @ManyToOne(type => Locations, location => location.inventory)
+    lid: Locations;
 
-    @ManyToMany(type => Parts, parts => parts.part_number)
-    @JoinTable({
-        name: "soldby",
-        joinColumn: {
-            name: "inventory_id",
-            referencedColumnName: "inventory_id"
-        },
-        inverseJoinColumn: {
-            name: "part_number",
-            referencedColumnName: "part_number"
-        }
-    })
-    part_number: Parts[];
+    @ManyToOne(type => Parts, parts => parts.inventory)
+    part_number: Parts;
 
     @Column()
     price: number;

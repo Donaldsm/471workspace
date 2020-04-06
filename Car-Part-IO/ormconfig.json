@@ -1,10 +1,10 @@
 {
    "type": "postgres",
    "host": "localhost",
-   "port": 5432,
-   "username": "apiuser",
-   "password": "Pass@word1",
-   "database": "users",
+   "port": 1234,
+   "username": "postgres",
+   "password": "root",
+   "database": "Car Part Io",
    "synchronize": true,
    "logging": false,
    "entities": [

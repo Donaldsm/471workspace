@@ -1,15 +1,16 @@
 import {UserController} from "./controller/UserController";
 import {PartsController} from "./controller/PartsController";
+import {User2Controller} from "./controller/User2Controller";
 
 export const Routes = [{
     method: "get",
     route: "/users",
-    controller: UserController,
+    controller: User2Controller,
     action: "all"
 }, {
     method: "get",
     route: "/users/:id",
-    controller: UserController,
+    controller: User2Controller,
     action: "one"
 }, {
     method: "post",
