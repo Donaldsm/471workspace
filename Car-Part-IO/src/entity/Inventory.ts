@@ -9,17 +9,17 @@ export class Inventory {
     inventory_id: number;
 
     @ManyToOne(type => Locations, location => location.inventory)
-    lid: Locations;
+    location: Locations;
 
     @ManyToOne(type => Parts, parts => parts.inventory)
     part_number: Parts;
 
-    @Column()
+    @Column({nullable:true})
     price: number;
 
-    @Column()
+    @Column({nullable:true})
     qty: number;
 
-    @Column()
+    @Column({nullable:true})
     url: string;
 }

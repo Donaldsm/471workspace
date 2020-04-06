@@ -9,22 +9,22 @@ export class Locations {
     @PrimaryGeneratedColumn()
     lid: number;
     // all of these columns are required to be non null 
-    @Column()
+    @Column({nullable: true})
     street_number: number;
 
-    @Column()
+    @Column({nullable: true})
     street_name: string;
 
-    @Column()
+    @Column({nullable: true})
     city: string;
 
-    @Column()
+    @Column({nullable: true})
     state_province: string; // sorry for the naming just trying to say it could be either
 
-    @Column()
+    @Column({nullable: true})
     postal_zip: string; // sorry for the naming just trying to say it could be either
 
-    @OneToMany(type => Inventory, inventory => inventory.lid)
+    @OneToMany(type => Inventory, inventory => inventory.location)
     inventory: Inventory[];
 
     @ManyToMany(type => Merchants, merchants => merchants.locations)
