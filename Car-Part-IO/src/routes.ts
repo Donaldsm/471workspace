@@ -61,6 +61,11 @@ export const Routes = [{
     controller: InventoryController,
     action: "partLocation"
 },{
+    method:"put",
+    route: "/inventory/update/:locationLid/:partNumberPartNumber/:qty",
+    controller: InventoryController,
+    action: "updateQty"
+},{
     method: "get",
     route: "/shippers",
     controller: ShippersController,
