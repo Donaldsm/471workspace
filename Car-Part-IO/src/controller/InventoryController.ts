@@ -36,11 +36,15 @@ export class InventoryController {
     }
 
     async updateQty(request: Request, response: Response, next: NextFunction) {
-        return await this.entityManager.query(`
+        console.log(request.body)
+        await this.entityManager.query(`
         UPDATE inventory
-        SET qty = ${request.params.qty}
-        WHERE "locationLid" = ${request.params.locationLid}
-        AND "partNumberPartNumber = ${request.params.partNumberPartNumber}
+        SET qty = ${request.body.qty}
+        WHERE "locationLid" = ${request.body.locationLid}
+        AND "partNumberPartNumber" = ${request.body.partNumberPartNumber}
         `)
+        return ({
+            "uri" : `/inventory/${request.body.locationLid}/${request.body.partNumberPartNumber}`
+        })
     }
 }

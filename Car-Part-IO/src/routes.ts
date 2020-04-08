@@ -39,7 +39,7 @@ export const Routes = [{
     method: "post",
     route: "/parts",
     controller: PartsController,
-    action: "save"
+    action: "add"
 },{
     method: "get",
     route: "/inventory",
@@ -62,7 +62,7 @@ export const Routes = [{
     action: "partLocation"
 },{
     method:"put",
-    route: "/inventory/update/:locationLid/:partNumberPartNumber/:qty",
+    route: "/inventory",
     controller: InventoryController,
     action: "updateQty"
 },{

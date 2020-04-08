@@ -52,7 +52,7 @@ createConnection().then(async connection => {
     }))
     await connection.manager.save(connection.manager.create(Locations, {
         street_number: Math.floor(Math.random() * 100),
-        street_name: Math.floor(Math.random()) + "th ave",
+        street_name: Math.floor(Math.random()*100) + "th ave",
         city: "Calgary"
     }))
     await connection.manager.save(connection.manager.create(Locations, {

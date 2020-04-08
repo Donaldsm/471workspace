@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany,Unique} from "typeorm";
 import { Inventory } from "./Inventory";
 import {Manufacturers} from "./Manufacturers";
 import { Vehicles } from "./Vehicles";

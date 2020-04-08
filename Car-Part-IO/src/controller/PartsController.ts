@@ -22,12 +22,16 @@ export class PartsController {
         `);
   }
 
-  async save(request: Request, response: Response, next: NextFunction) {
+  async add(request: Request, response: Response, next: NextFunction) {
     console.log(request.body);
-    return await this.entityManager.query(`
-        INSERT INTO parts (name, description, category, type)
-        VALUES ('${JSON.stringify(request.body.name)}', '${JSON.stringify(request.body.description)}', '${JSON.stringify(request.body.category)}', '${JSON.stringify(request.body.type)}');
-        `);
+    await this.entityManager.query(`
+        INSERT INTO parts (part_number, name, description, category, type)
+        VALUES ('${request.body.part_number}','${request.body.name}', '${request.body.description}',
+         '${request.body.category}', '${request.body.type}');
+    `);
+    return ({
+        "uri": `/parts/${request.body.part_number}`
+    });
   }
 
   async remove(request: Request, response: ClientResponse, next: NextFunction) {
@@ -35,3 +39,7 @@ export class PartsController {
     await this.partsRepository.remove(partToRemove);
   }
 }
+
+
+
+
