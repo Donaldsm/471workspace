@@ -34,7 +34,7 @@ createConnection().then(async connection => {
     // start express server
     app.listen(3000);
 
-    // insert new users for test
+    // insert new Records to test against
     await connection.manager.save(connection.manager.create(Users, {
         first_name: "Timber",
         last_name: "Saw"
@@ -46,11 +46,20 @@ createConnection().then(async connection => {
     await connection.manager.save(connection.manager.create(Parts, {
         name: "ECM"
     }));
-    // await connection.manager.save(connection.manager.create(Locations, {
-    //     street_number: "1234",
-    //     street_name: "hello"
-    // }))
-
+    await connection.manager.save(connection.manager.create(Locations, {
+        street_number: 1234,
+        street_name: "hello"
+    }))
+    await connection.manager.save(connection.manager.create(Locations, {
+        street_number: Math.floor(Math.random() * 100),
+        street_name: Math.floor(Math.random()) + "th ave",
+        city: "Calgary"
+    }))
+    await connection.manager.save(connection.manager.create(Locations, {
+        street_number: Math.floor(Math.random() * 100),
+        street_name: Math.floor(Math.random()*100) + "th ave",
+        city: "Vancouver",
+    }))
 
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
 

@@ -2,6 +2,8 @@ import {UserController} from "./controller/UserController";
 import {PartsController} from "./controller/PartsController";
 import {User2Controller} from "./controller/User2Controller";
 import {InventoryController} from "./controller/InventoryController";
+import {ShippersController} from "./controller/ShippersController";
+import { LocationsController } from "./controller/LocationsController";
 
 export const Routes = [{
     method: "get",
@@ -58,4 +60,19 @@ export const Routes = [{
     route: "/inventory/:locationLid/:partNumberPartNumber",
     controller: InventoryController,
     action: "partLocation"
+},{
+    method: "get",
+    route: "/shippers",
+    controller: ShippersController,
+    action: "allShippers"
+},{
+    method: "get",
+    route: "/locations",
+    controller: LocationsController,
+    action: "getAll"
+},{
+    method: "get",
+    route: "/locations/:lid",
+    controller: LocationsController,
+    action: "getOne"
 }];
