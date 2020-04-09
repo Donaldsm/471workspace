@@ -1,83 +1,94 @@
-import {UserController} from "./controller/UserController";
-import {PartsController} from "./controller/PartsController";
-import {User2Controller} from "./controller/User2Controller";
-import {InventoryController} from "./controller/InventoryController";
-import {ShippersController} from "./controller/ShippersController";
+import { UserController } from "./controller/UserController";
+import { PartsController } from "./controller/PartsController";
+import { User2Controller } from "./controller/User2Controller";
+import { InventoryController } from "./controller/InventoryController";
+import { ShippersController } from "./controller/ShippersController";
 import { LocationsController } from "./controller/LocationsController";
+import { MerchantsController } from "./controller/MerchantsController";
 
 export const Routes = [{
     method: "get",
-    route: "/users",
+    route: "/api/v1.0/users",
     controller: User2Controller,
     action: "all"
 }, {
     method: "get",
-    route: "/users/:id",
+    route: "/api/v1.0/users/:id",
     controller: User2Controller,
     action: "one"
 }, {
     method: "post",
-    route: "/users",
-    controller: UserController,
-    action: "save"
+    route: "/api/v1.0/users",
+    controller: User2Controller,
+    action: "add"
 }, {
     method: "delete",
-    route: "/users/:id",
+    route: "/api/v1.0/users/:id",
     controller: UserController,
     action: "remove"
 },{
     method: "get",
-    route:"/parts",
+    route:"/api/v1.0/parts",
     controller: PartsController,
     action: "all"
 },{
     method: "get",
-    route: "/parts/:id",
+    route: "/api/v1.0/parts/:id",
     controller: PartsController,
     action: "one"
 },{
     method: "post",
-    route: "/parts",
+    route: "/api/v1.0/parts",
     controller: PartsController,
     action: "add"
 },{
     method: "get",
-    route: "/inventory",
+    route: "/api/v1.0/inventory",
     controller: InventoryController,
     action: "all"
 },{
     method: "get",
-    route: "/inventory/:locationLid",
+    route: "/api/v1.0/inventory/:locationLid",
     controller: InventoryController,
     action: "location"
 },{
     method: "get",
-    route: "/inventory/parts/:partNumberPartNumber",
+    route: "/api/v1.0/inventory/parts/:partNumberPartNumber",
     controller: InventoryController,
     action: "part"
 },{
     method: "get",
-    route: "/inventory/:locationLid/:partNumberPartNumber",
+    route: "/api/v1.0/inventory/:locationLid/:partNumberPartNumber",
     controller: InventoryController,
     action: "partLocation"
 },{
     method:"put",
-    route: "/inventory",
+    route: "/api/v1.0/inventory",
     controller: InventoryController,
     action: "updateQty"
 },{
     method: "get",
-    route: "/shippers",
+    route: "/api/v1.0/shippers",
     controller: ShippersController,
     action: "allShippers"
 },{
     method: "get",
-    route: "/locations",
+    route: "/api/v1.0/locations",
     controller: LocationsController,
     action: "getAll"
 },{
     method: "get",
-    route: "/locations/:lid",
+    route: "/api/v1.0/locations/:lid",
     controller: LocationsController,
     action: "getOne"
+},{
+    method: "get",
+    route: "/api/v1.0/merchants/:mid/locations/:lid",
+    controller: MerchantsController,
+    action: "oneLocation"
+},{
+    method: "post",
+    route: "/api/v1.0/merchants/:mid/locations",
+    controller: LocationsController,
+    action: "add"
 }];

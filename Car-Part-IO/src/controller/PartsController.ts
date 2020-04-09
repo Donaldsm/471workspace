@@ -14,7 +14,7 @@ export class PartsController {
         `);
   }
 
-  async one(request: Request, response: ClientResponse, next: NextFunction) {
+  async one(request: Request, response: Response, next: NextFunction) {
     return this.entityManager.query(`
         SELECT *
         FROM parts
@@ -30,7 +30,7 @@ export class PartsController {
          '${request.body.category}', '${request.body.type}');
     `);
     return ({
-        "uri": `/parts/${request.body.part_number}`
+        "uri": `/api/v1.0/parts/${request.body.part_number}`
     });
   }
 
