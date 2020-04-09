@@ -1,8 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany,Unique} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany, OneToOne, JoinColumn} from "typeorm";
 import { Inventory } from "./Inventory";
 import {Manufacturers} from "./Manufacturers";
 import { Vehicles } from "./Vehicles";
 import { PartsBought } from "./PartsBought";
+import { Videos } from "./Videos";
 
 @Entity()
 export class Parts {
@@ -55,5 +56,7 @@ export class Parts {
 
     @OneToMany(type => PartsBought, partsBought => partsBought.part_Number)
     history: PartsBought[];
+
+    
 
 }

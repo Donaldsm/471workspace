@@ -1,5 +1,5 @@
-import {getManager, getRepository, getConnection } from "typeorm";
-import {NextFunction, Request, Response} from "express";
+import { getManager, getRepository, getConnection } from "typeorm";
+import { NextFunction, Request, Response } from "express";
 import { Locations } from "../entity/Locations";
 import { ClientResponse } from "http";
 

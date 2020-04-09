@@ -5,6 +5,7 @@ import { InventoryController } from "./controller/InventoryController";
 import { ShippersController } from "./controller/ShippersController";
 import { LocationsController } from "./controller/LocationsController";
 import { MerchantsController } from "./controller/MerchantsController";
+import { VideoController } from "./controller/VideoController";
 
 export const Routes = [{
     method: "get",
@@ -90,5 +91,15 @@ export const Routes = [{
     method: "post",
     route: "/api/v1.0/merchants/:mid/locations",
     controller: LocationsController,
+    action: "add"
+},{
+    method: "get",
+    route: "/api/v1.0/parts/:partPartNumber/videos/:url",
+    controller: VideoController,
+    action: "getVideo"
+},{
+    method: "post",
+    route: "/api/v1.0/parts/:partPartNumber/videos",
+    controller: VideoController,
     action: "add"
 }];

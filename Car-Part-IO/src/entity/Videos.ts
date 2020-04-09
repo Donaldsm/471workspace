@@ -1,11 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, JoinTable} from "typeorm";
+import {Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, JoinTable} from "typeorm";
 import { Parts } from "./Parts";
 import { Users } from "./Users";
 
 @Entity()
 export class Videos {
     
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     url: string;
 
     @Column()
