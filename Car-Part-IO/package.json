@@ -17,7 +17,7 @@
       "body-parser": "^1.18.1"
    },
    "scripts": {
-       "start": "ts-node src/index.ts",
-	   "watch": "ts-watch src/index.ts --onSuccess \"ts-node ./dist/index.ts\""
+      "start": "ts-node src/index.ts",
+      "watch": "ts-watch src/index.ts --onSuccess \"ts-node ./dist/index.ts\""
    }
 }

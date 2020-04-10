@@ -14,11 +14,7 @@ export class MerchantsController {
   }
   async oneLocation(request: Request, response: ClientResponse, next: NextFunction){
     return await this.entityManager.query(`
-    SELECT *
-    FROM merchants AS M
-      INNER JOIN merch_locations AS ML ON ML.mid = M.mid
-      INNER JOIN locations AS L On L.lid = ML.lid
-    WHERE M.mid = ${request.params.mid} AND L.lid = ${request.params.lid};
+    SELECT * FROM one_location(${request.params.mid},${request.params.lid});
     `);
   }
 }

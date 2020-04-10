@@ -102,4 +102,8 @@ export const Routes = [{
     route: "/api/v1.0/parts/:partPartNumber/videos",
     controller: VideoController,
     action: "add"
-}];
+}
+    // endpoint we should do, add a part to a inventory
+
+    // we should also add a endpoint to allow a user to add a vehicle tied to their account.
+];

@@ -1,0 +1,94 @@
+
+Users stored functions:
+
+    CREATE OR REPLACE FUNCTION public.all_users() RETURNS TABLE(
+    id integer ,
+        first_name character varying ,
+        last_name character varying ,
+        dob character varying ,
+        email character varying ,
+        street_number integer,
+        street_name character varying ,
+        state_province character varying ,
+        postal_zip character varying
+    ) AS $$
+    BEGIN 
+    RETURN QUERY SELECT * FROM users;
+    END;
+    $$ LANGUAGE plpgsql;
+
+
+    CREATE OR REPLACE FUNCTION public.one_users(puser integer) RETURNS TABLE(
+    id integer ,
+        first_name character varying ,
+        last_name character varying ,
+        dob character varying ,
+        email character varying ,
+        street_number integer,
+        street_name character varying ,
+        state_province character varying ,
+        postal_zip character varying
+    ) AS $$
+    BEGIN 
+    RETURN QUERY 
+        SELECT * FROM users AS U
+        WHERE U.id = puser;
+    END;
+    $$ LANGUAGE plpgsql;
+
+
+    CREATE OR REPLACE FUNCTION public.add_one_users(puser integer, pfirst_name character varying, 
+                                                    plast_name character varying, pemail character varying) RETURNS void
+    AS $$
+    BEGIN  
+        INSERT INTO users (id, first_name, last_name, email)
+        VALUES (puser,pfirst_name,
+        plast_name, pemail);
+    END;
+    $$ LANGUAGE plpgsql;
+
+Merchants stored functions
+
+    CREATE OR REPLACE FUNCTION public.locations(pmid integer) RETURNS TABLE(
+    mid integer ,
+    name character varying,
+    website character varying,
+    phone integer,
+    email character varying,
+    store_url character varying,
+    type character varying
+    ) AS $$
+    BEGIN 
+    RETURN QUERY 
+        SELECT loc.lid, loc.street_number, loc.street_name, loc.city, loc.state_province, loc.postal_zip 
+    FROM locations AS loc, merchants AS mer, merch_locations AS merloc
+    WHERE loc.lid = merloc.lid AND mer.mid = merloc.mid AND mer.mid = pmid;
+    END;
+    $$ LANGUAGE plpgsql; // little disclaimer this one dosent work right now...
+
+    CREATE OR REPLACE FUNCTION public.one_location(pmid integer, plid integer) RETURNS TABLE(
+    mid integer ,
+    name character varying,
+    website character varying,
+    phone integer,
+    email character varying,
+    store_url character varying,
+    type character varying,
+	lid integer ,
+	street_number integer,
+	street_name character varying,
+	city character varying,
+	state_province character varying,
+	postal_zip character varying
+    ) AS $$
+    BEGIN 
+    RETURN QUERY 
+   SELECT M.*,L.*
+    FROM merchants AS M
+      INNER JOIN merch_locations AS ML ON ML.mid = M.mid
+      INNER JOIN locations AS L On L.lid = ML.lid
+    WHERE M.mid = pmid AND L.lid = plid;
+    END;
+    $$ LANGUAGE plpgsql;
+	 
+	
