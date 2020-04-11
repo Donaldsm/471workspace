@@ -14,28 +14,21 @@ export class LocationsController {
 
     async getAll(request: Request, response: Response, next: NextFunction){
         return await this.entityManager.query(`
-        SELECT *
-        FROM locations
+        SELECT * FROM all_locations();
         `)
     }
 
     async getOne(request: Request, response: Response, next: NextFunction){
         return await this.entityManager.query(`
-        SELECT *
-        FROM locations
-        WHERE "lid" = ${request.params.lid}
+        SELECT * one_location_no_merchant(${request.params.lid});
         `)
     }
 
     async add(request: Request, response: Response, next: NextFunction){
         console.log(request.body);
         await this.entityManager.query(`
-        INSERT INTO locations (lid, street_number, street_name, city, postal_zip)
-        VALUES ('${request.body.lid}','${request.body.street_name}','${request.body.street_number}'
-        ,'${request.body.city}','${request.body.postal_zip}');
-
-        INSERT INTO merch_locations(lid, mid)
-        VALUES ('${request.body.lid}','${request.params.mid}');
+        SELECT add_location(${request.body.lid},'${request.body.street_number}','${request.body.street_name}',
+        '${request.body.city}','${request.body.postal_zip}',${request.params.mid});
         `)
         return ({
             "uri": `/api/v1.0/merchants/${request.params.mid}/locations/${request.body.lid}`

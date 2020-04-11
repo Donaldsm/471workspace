@@ -1,5 +1,5 @@
 
-Users stored functions:
+Users stored functions for a PostgreSQL database:
 
     CREATE OR REPLACE FUNCTION public.all_users() RETURNS TABLE(
     id integer ,
@@ -50,13 +50,13 @@ Users stored functions:
 Merchants stored functions
 
     CREATE OR REPLACE FUNCTION public.locations(pmid integer) RETURNS TABLE(
-    mid integer ,
-    name character varying,
-    website character varying,
-    phone integer,
-    email character varying,
-    store_url character varying,
-    type character varying
+        mid integer ,
+        name character varying,
+        website character varying,
+        phone integer,
+        email character varying,
+        store_url character varying,
+        type character varying
     ) AS $$
     BEGIN 
     RETURN QUERY 
@@ -67,28 +67,222 @@ Merchants stored functions
     $$ LANGUAGE plpgsql; // little disclaimer this one dosent work right now...
 
     CREATE OR REPLACE FUNCTION public.one_location(pmid integer, plid integer) RETURNS TABLE(
-    mid integer ,
-    name character varying,
-    website character varying,
-    phone integer,
-    email character varying,
-    store_url character varying,
-    type character varying,
-	lid integer ,
-	street_number integer,
-	street_name character varying,
-	city character varying,
-	state_province character varying,
-	postal_zip character varying
+        mid integer ,
+        name character varying,
+        website character varying,
+        phone integer,
+        email character varying,
+        store_url character varying,
+        type character varying,
+	    lid integer ,
+	    street_number integer,
+	    street_name character varying,
+	    city character varying,
+	    state_province character varying,
+	    postal_zip character varying
     ) AS $$
     BEGIN 
     RETURN QUERY 
-   SELECT M.*,L.*
+    SELECT M.*,L.*
     FROM merchants AS M
       INNER JOIN merch_locations AS ML ON ML.mid = M.mid
       INNER JOIN locations AS L On L.lid = ML.lid
     WHERE M.mid = pmid AND L.lid = plid;
     END;
     $$ LANGUAGE plpgsql;
-	 
+
+parts stored functions:
+
+    CREATE OR REPLACE FUNCTION all_parts() RETURNS TABLE (
+        part_number integer,
+        name character varying,
+        description character varying,
+        category character varying,
+        type character varying
+    ) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT *
+        FROM parts;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION one_part(pid integer) RETURNS TABLE (
+        part_number integer,
+        name character varying,
+        description character varying,
+        category character varying,
+        type character varying
+    ) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT *
+        FROM parts AS P
+        WHERE p.part_number = pid;
+    END;
+    $$ LANGUAGE plpgsql;
+        
+	CREATE OR REPLACE FUNCTION add_part(pid integer, pname character varying, pdescription character varying,
+									pcategory character varying, ptype character varying) RETURNS void
+    AS $$
+    BEGIN
+	    INSERT INTO parts (part_number, name, description, category, type)
+    	VALUES(pid, pname, pdescription, pcategory, ptype);
+    END;
+    $$ LANGUAGE plpgsql;
+
+locations stored functions:
+
+    CREATE OR REPLACE FUNCTION all_locations() RETURNS TABLE (
+	    id integer,
+        street_number integer,
+        street_name character varying,
+        city character varying,
+        state_province character varying,
+        postal_zip character varying    
+    ) AS $$
+    BEGIN
+	    RETURN QUERY
+	    SELECT * FROM locations;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION one_location_no_merchant(plid integer) RETURNS TABLE (
+	    id integer,
+        street_number integer,
+        street_name character varying,
+        city character varying,
+        state_province character varying,
+        postal_zip character varying    
+    ) AS $$
+    BEGIN
+	    RETURN QUERY
+	    SELECT * FROM locations AS P
+	    WHERE p.lid = plid;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION add_location(plid integer, pstreet_number integer, pstreet_name character varying,
+										pcity character varying, ppostal_zip character varying, pmid integer) RETURNS void
+    AS $$
+    BEGIN
+    	INSERT INTO locations (lid, street_number, street_name, city, postal_zip)
+    	VALUES (plid, pstreet_number, pstreet_name, pcity, ppostal_zip);
 	
+	    INSERT INTO merch_locations(mid, lid)
+	    VALUES (pmid,plid);
+    END;
+    $$ LANGUAGE plpgsql;
+
+
+inventory stored functions:
+
+    CREATE OR REPLACE FUNCTION all_inventorys() RETURNS TABLE(
+	    inventory_id integer,
+        price integer,
+        qty integer,
+        url character varying,
+        "partNumberPartNumber" integer,
+        "locationLid" integer
+    ) AS $$
+    BEGIN
+    	RETURN QUERY
+    	SELECT * FROM inventory;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION location_inventory(plid integer) RETURNS TABLE(
+	    inventory_id integer,
+        price integer,
+        qty integer,
+        url character varying,
+        "partNumberPartNumber" integer,
+        "locationLid" integer
+    ) AS $$
+    BEGIN
+	    RETURN QUERY
+	    SELECT * FROM inventory AS P
+	    WHERE P."locationLid" = plid;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION part_search_inventorys(ppart integer) RETURNS TABLE(
+	    inventory_id integer,
+        price integer,
+        qty integer,
+        url character varying,
+        "partNumberPartNumber" integer,
+        "locationLid" integer
+    ) AS $$
+    BEGIN
+	    RETURN QUERY
+	    SELECT * FROM inventory AS P
+	    WHERE p."partNumberPartNumber" = ppart;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION part_location_search_inventorys(plid integer, ppart integer) RETURNS TABLE(
+	    inventory_id integer,
+        price integer,
+        qty integer,
+        url character varying,
+        "partNumberPartNumber" integer,
+        "locationLid" integer
+    ) AS $$
+    BEGIN
+	    RETURN QUERY
+	    SELECT * FROM inventory AS P
+	    WHERE p."partNumberPartNumber" = ppart AND P."locationLid" = plid;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION update_qty(plid integer, ppart integer,pqty integer) RETURNS void
+    AS $$
+    BEGIN
+	    UPDATE inventory AS P
+	    SET qty = pqty
+	    WHERE p."partNumberPartNumber" = ppart AND P."locationLid" = plid;
+    END;
+    $$ LANGUAGE plpgsql;
+
+shippers stored Functions:
+
+    CREATE OR REPLACE FUNCTION all_shippers() RETURNS TABLE (
+ 	    sid integer,
+        name character varying,
+        contact character varying
+    ) AS $$
+    BEGIN
+    	RETURN QUERY
+    	SELECT *
+    	FROM shippers;
+    END;
+    $$ LANGUAGE plpgsql;
+
+Videos Stored Functions:
+
+    CREATE OR REPLACE FUNCTION add_video(purl character varying, pduration integer, ppart_number integer) RETURNS void
+    AS $$
+    BEGIN
+    	INSERT INTO videos(url, duration, "partPartNumber")
+    	VALUES (purl,pduration,ppart_number);
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE FUNCTION find_video(ppart_number integer) RETURNS TABLE (
+	    duration integer,
+        "partPartNumber" integer,
+        url character varying
+    ) AS $$
+    BEGIN
+    RETURN QUERY
+	    SELECT * 
+	    FROM videos AS P
+	    WHERE P."partPartNumber" = ppart_number;
+    END;
+    $$ LANGUAGE plpgsql;
+
+
+
+
+

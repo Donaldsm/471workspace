@@ -7,8 +7,7 @@ export class VideoController {
     async add(request: Request, response: Response, next: NextFunction) {
         console.log(request.body);
         await this.entityManager.query(`
-        INSERT INTO videos (url, duration, "partPartNumber")
-        VALUES ('${request.body.url}','${request.body.duration}','${request.params.partPartNumber}');
+        SELECT add_video('${request.body.url}',${request.body.duration}, ${request.params.partPartNumber});
         `);
         return ({
             "uri" : `/api/v1.0/parts/${request.params.partPartNumber}/videos/${request.body.url}`
@@ -17,9 +16,7 @@ export class VideoController {
 
     async getVideo(request: Request, response: Response, next: NextFunction){
         return await this.entityManager.query(`
-        SELECT *
-        FROM videos
-        WHERE url = ${request.params.url} AND "partPartNUmber" = ${request.params.partPartNUmber};
+        SELECT * FROM find_video(${request.params.partPartNumber});
         `)
     }
 }

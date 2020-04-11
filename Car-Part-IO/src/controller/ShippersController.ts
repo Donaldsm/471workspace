@@ -6,8 +6,7 @@ export class ShippersController {
     
     async allShippers(request: Request, response: Response, next: NextFunction){
         return await this.entityManager.query(`
-        SELECT *
-        FROM Shippers
+        SELECT * FROM all_shippers();
         `)
     }
 }

@@ -7,44 +7,38 @@ export class InventoryController {
     private entityManager = getConnection().manager;
 
     async all(request: Request, resposne: Response, next: NextFunction) {
-        return await this.entityManager.query(`SELECT * FROM inventory`);
+        return await this.entityManager.query(`
+        SELECT * FROM all_inventorys();
+        `);
     }
 
     async location(request: Request, response: Response, next: NextFunction) {
         return await this.entityManager.query(`
-        SELECT *
-        FROM inventory
-        WHERE "locationLid" = ${request.params.locationLid}
+        SELECT * FROM location_inventory(${request.params.locationLid});
         `);
     }
 
     async part(request: Request, response: Response, next: NextFunction) {
         return await this.entityManager.query(`
-        SELECT *
-        FROM inventory
-        WHERE "partNumberPartNumber" = ${request.params.partNumberPartNumber}
+        SELECT * FROM part_search_inventorys(${request.params.partNumberPartNumber});
         `)
     }
 
     async partLocation(request: Request, response: Response, next: NextFunction) {
         return await this. entityManager.query(`
-        SELECT *
-        FROM inventory
-        WHERE "locationLid" = ${request.params.locationLid} AND
-        "partNumberPartNumber" = ${request.params.partNumberPartNumber}
+        SELECT * FROM part_location_search_inventorys(${request.params.locationLid},
+            ${request.params.partNumberPartNumber});
         `)
     }
 
     async updateQty(request: Request, response: Response, next: NextFunction) {
         console.log(request.body)
         await this.entityManager.query(`
-        UPDATE inventory
-        SET qty = ${request.body.qty}
-        WHERE "locationLid" = ${request.body.locationLid}
-        AND "partNumberPartNumber" = ${request.body.partNumberPartNumber}
+        SELECT update_qty(${request.body.locationLid},${request.body.partNumberPartNumber},
+            ${request.body.qty});
         `)
         return ({
-            "uri" : `/inventory/${request.body.locationLid}/${request.body.partNumberPartNumber}`
+            "uri" : `/api/v1.0/inventory/${request.body.locationLid}/${request.body.partNumberPartNumber}`
         })
     }
 }

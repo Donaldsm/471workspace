@@ -94,7 +94,7 @@ export const Routes = [{
     action: "add"
 },{
     method: "get",
-    route: "/api/v1.0/parts/:partPartNumber/videos/:url",
+    route: "/api/v1.0/videos/parts/:partPartNumber",
     controller: VideoController,
     action: "getVideo"
 },{
