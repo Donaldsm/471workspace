@@ -1,5 +1,4 @@
-
-Users stored functions for a PostgreSQL database:
+--Users stored functions for a PostgreSQL database:
 
     CREATE OR REPLACE FUNCTION public.all_users() RETURNS TABLE(
     id integer ,
@@ -47,7 +46,7 @@ Users stored functions for a PostgreSQL database:
     END;
     $$ LANGUAGE plpgsql;
 
-Merchants stored functions
+--Merchants stored functions
 
     CREATE OR REPLACE FUNCTION public.locations(pmid integer) RETURNS TABLE(
         mid integer ,
@@ -91,7 +90,7 @@ Merchants stored functions
     END;
     $$ LANGUAGE plpgsql;
 
-parts stored functions:
+--parts stored functions:
 
     CREATE OR REPLACE FUNCTION all_parts() RETURNS TABLE (
         part_number integer,
@@ -131,7 +130,7 @@ parts stored functions:
     END;
     $$ LANGUAGE plpgsql;
 
-locations stored functions:
+--locations stored functions:
 
     CREATE OR REPLACE FUNCTION all_locations() RETURNS TABLE (
 	    id integer,
@@ -175,7 +174,7 @@ locations stored functions:
     $$ LANGUAGE plpgsql;
 
 
-inventory stored functions:
+--inventory stored functions:
 
     CREATE OR REPLACE FUNCTION all_inventorys() RETURNS TABLE(
 	    inventory_id integer,
@@ -245,7 +244,7 @@ inventory stored functions:
     END;
     $$ LANGUAGE plpgsql;
 
-shippers stored Functions:
+--shippers stored Functions:
 
     CREATE OR REPLACE FUNCTION all_shippers() RETURNS TABLE (
  	    sid integer,
@@ -259,7 +258,7 @@ shippers stored Functions:
     END;
     $$ LANGUAGE plpgsql;
 
-Videos Stored Functions:
+--Videos Stored Functions:
 
     CREATE OR REPLACE FUNCTION add_video(purl character varying, pduration integer, ppart_number integer) RETURNS void
     AS $$
@@ -281,8 +280,3 @@ Videos Stored Functions:
 	    WHERE P."partPartNumber" = ppart_number;
     END;
     $$ LANGUAGE plpgsql;
-
-
-
-
-

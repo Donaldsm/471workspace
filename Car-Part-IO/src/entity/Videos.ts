@@ -1,31 +1,31 @@
-import {Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, JoinTable} from "typeorm";
+import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
 import { Parts } from "./Parts";
 import { Users } from "./Users";
 
 @Entity()
 export class Videos {
-    
-    @PrimaryColumn()
-    url: string;
 
-    @Column()
-    duration: number;
+  @PrimaryColumn()
+  url: string;
 
-    @OneToOne(type => Parts, parts => parts.part_number)
-    @JoinColumn()
-    part: Parts;
+  @Column()
+  duration: number;
 
-    @ManyToMany(type => Users)
-    @JoinTable({
-        name: "watches",
-        joinColumn: {
-            name: "url",
-            referencedColumnName: "url"
-        },
-        inverseJoinColumn: {
-            name: "user_id",
-            referencedColumnName: "id"
-        }
-    })
-    usersWatched: Users[];
+  @OneToOne(type => Parts, parts => parts.part_number)
+  @JoinColumn()
+  part: Parts;
+
+  @ManyToMany(type => Users)
+  @JoinTable({
+    name: "watches",
+    joinColumn: {
+      name: "url",
+      referencedColumnName: "url"
+    },
+    inverseJoinColumn: {
+      name: "user_id",
+      referencedColumnName: "id"
+    }
+  })
+  usersWatched: Users[];
 }
