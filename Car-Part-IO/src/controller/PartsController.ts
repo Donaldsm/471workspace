@@ -4,7 +4,9 @@ import { Parts } from "../entity/Parts";
 import { ClientResponse } from "http";
 
 export class PartsController {
+
   private partsRepository = getRepository(Parts);
+
   private entityManager = getConnection().manager;
 
   async all(request: Request, response: Response, next: NextFunction) {
@@ -20,13 +22,12 @@ export class PartsController {
   }
 
   async add(request: Request, response: Response, next: NextFunction) {
-    console.log(request.body);
     await this.entityManager.query(`
     SELECT add_part(${request.body.part_number}, '${request.body.name}', '${request.body.description}',
     '${request.body.category}', '${request.body.type}')
     `);
     return ({
-        "uri": `/api/v1.0/parts/${request.body.part_number}`
+      "uri": `/api/v1.0/parts/${request.body.part_number}`
     });
   }
 

@@ -1,26 +1,30 @@
-import {getRepository} from "typeorm";
-import {NextFunction, Request, Response} from "express";
-import {Users} from "../entity/Users";
+import { getConnection } from "typeorm";
+import { NextFunction, Request, Response } from "express";
 
 export class UserController {
 
-    private userRepository = getRepository(Users);
+  private entityManager = getConnection().manager;
 
-    async all(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.find();
-    }
+  async all(request: Request, response: Response, next: NextFunction) {
+    return await this.entityManager.query(`
+    SELECT * FROM all_users();
+    `);
+  }
 
-    async one(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.findOne(request.params.id);
-    }
+  async one(request: Request, response: Response, next: NextFunction) {
+    return await this.entityManager.query(`
+    SELECT * FROM one_users(${request.params.id});
+    `);
+  }
 
-    async save(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.save(request.body);
-    }
-
-    async remove(request: Request, response: Response, next: NextFunction) {
-        let userToRemove = await this.userRepository.findOne(request.params.id);
-        await this.userRepository.remove(userToRemove);
-    }
-
+  async add(request: Request, response: Response, next: NextFunction) {
+    console.log(request.body);
+    await this.entityManager.query(`
+    SELECT add_one_users(${request.body.id},'${request.body.first_name}',
+    '${request.body.last_name}','${request.body.email}');
+    `);
+    return ({
+      "uri": `/users/${request.body.id}`
+    });
+  }
 }

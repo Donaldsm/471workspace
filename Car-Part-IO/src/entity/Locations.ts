@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable,OneToMany} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { Inventory } from "./Inventory";
 import { Merchants } from "./Merchants";
 import { Shippers } from "./Shipppers";
@@ -6,52 +6,55 @@ import { Shippers } from "./Shipppers";
 @Entity()
 export class Locations {
 
-    @PrimaryGeneratedColumn()
-    lid: number;
-    // all of these columns are required to be non null 
-    @Column({nullable: true})
-    street_number: number;
+  @PrimaryGeneratedColumn()
+  lid: number;
 
-    @Column({nullable: true})
-    street_name: string;
+  // These should all be not-null columns, however
+  // for the purposes of populating the database
+  // we have chosen to let them be nullable
+  @Column({ nullable: true })
+  street_number: number;
 
-    @Column({nullable: true})
-    city: string;
+  @Column({ nullable: true })
+  street_name: string;
 
-    @Column({nullable: true})
-    state_province: string; // sorry for the naming just trying to say it could be either
+  @Column({ nullable: true })
+  city: string;
 
-    @Column({nullable: true})
-    postal_zip: string; // sorry for the naming just trying to say it could be either
+  @Column({ nullable: true })
+  state_province: string;
 
-    @OneToMany(type => Inventory, inventory => inventory.location)
-    inventory: Inventory[];
+  @Column({ nullable: true })
+  postal_zip: string;
 
-    @ManyToMany(type => Merchants, merchants => merchants.locations)
-    @JoinTable({
-        name: "merch_locations",
-        joinColumn: {
-            name: "lid",
-            referencedColumnName: "lid"
-        },
-        inverseJoinColumn: {
-            name:"mid",
-            referencedColumnName: "mid"
-        }
-    })
-    merchants: Merchants[];
+  @OneToMany(type => Inventory, inventory => inventory.location)
+  inventory: Inventory[];
 
-    @ManyToMany(type => Shippers, shipper => shipper.pickups)
-    @JoinTable({
-        name: "ships_from",
-        joinColumn: {
-            name: "lid",
-            referencedColumnName: "lid"
-        },
-        inverseJoinColumn: {
-            name: "sid",
-            referencedColumnName: "sid"
-        }
-    })
-    sid: Shippers[];
+  @ManyToMany(type => Merchants, merchants => merchants.locations)
+  @JoinTable({
+    name: "merch_locations",
+    joinColumn: {
+      name: "lid",
+      referencedColumnName: "lid"
+    },
+    inverseJoinColumn: {
+      name: "mid",
+      referencedColumnName: "mid"
+    }
+  })
+  merchants: Merchants[];
+
+  @ManyToMany(type => Shippers, shipper => shipper.pickups)
+  @JoinTable({
+    name: "ships_from",
+    joinColumn: {
+      name: "lid",
+      referencedColumnName: "lid"
+    },
+    inverseJoinColumn: {
+      name: "sid",
+      referencedColumnName: "sid"
+    }
+  })
+  sid: Shippers[];
 }
