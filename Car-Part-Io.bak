@@ -1,0 +1,2292 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.2
+-- Dumped by pg_dump version 12.2
+
+-- Started on 2020-04-15 20:33:45
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 256 (class 1255 OID 18164)
+-- Name: add_location(integer, integer, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.add_location(plid integer, pstreet_number integer, pstreet_name character varying, pcity character varying, ppostal_zip character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	INSERT INTO locations (lid, street_number, street_name, city, postal_zip)
+	VALUES (plid, pstreet_number, pstreet_name, pcity, ppostal_zip);
+END;
+$$;
+
+
+ALTER FUNCTION public.add_location(plid integer, pstreet_number integer, pstreet_name character varying, pcity character varying, ppostal_zip character varying) OWNER TO postgres;
+
+--
+-- TOC entry 257 (class 1255 OID 18165)
+-- Name: add_location(integer, integer, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.add_location(plid integer, pstreet_number integer, pstreet_name character varying, pcity character varying, ppostal_zip character varying, pmid integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	INSERT INTO locations (lid, street_number, street_name, city, postal_zip)
+	VALUES (plid, pstreet_number, pstreet_name, pcity, ppostal_zip);
+	
+	INSERT INTO merch_locations(mid, lid)
+	VALUES (pmid,plid);
+END;
+$$;
+
+
+ALTER FUNCTION public.add_location(plid integer, pstreet_number integer, pstreet_name character varying, pcity character varying, ppostal_zip character varying, pmid integer) OWNER TO postgres;
+
+--
+-- TOC entry 235 (class 1255 OID 18148)
+-- Name: add_one_users(integer, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.add_one_users(puser integer, pfirst_name character varying, plast_name character varying, pemail character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN  
+	INSERT INTO users (id, first_name, last_name, email)
+      VALUES (puser,pfirst_name,
+      plast_name, pemail);
+END;
+$$;
+
+
+ALTER FUNCTION public.add_one_users(puser integer, pfirst_name character varying, plast_name character varying, pemail character varying) OWNER TO postgres;
+
+--
+-- TOC entry 240 (class 1255 OID 18161)
+-- Name: add_part(integer, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.add_part(pid integer, pname character varying, pdescription character varying, pcategory character varying, ptype character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	INSERT INTO parts (part_number, name, description, category, type)
+	VALUES(pid, pname, pdescription, pcategory, ptype);
+END;
+$$;
+
+
+ALTER FUNCTION public.add_part(pid integer, pname character varying, pdescription character varying, pcategory character varying, ptype character varying) OWNER TO postgres;
+
+--
+-- TOC entry 236 (class 1255 OID 18174)
+-- Name: add_video(character varying, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.add_video(purl character varying, pduration integer, ppart_number integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	INSERT INTO videos(url, duration, "partPartNumber")
+	VALUES (purl,pduration,ppart_number);
+END;
+$$;
+
+
+ALTER FUNCTION public.add_video(purl character varying, pduration integer, ppart_number integer) OWNER TO postgres;
+
+--
+-- TOC entry 258 (class 1255 OID 18166)
+-- Name: all_inventorys(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.all_inventorys() RETURNS TABLE(inventory_id integer, price integer, qty integer, url character varying, "partNumberPartNumber" integer, "locationLid" integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+	SELECT * FROM inventory;
+END;
+$$;
+
+
+ALTER FUNCTION public.all_inventorys() OWNER TO postgres;
+
+--
+-- TOC entry 241 (class 1255 OID 18162)
+-- Name: all_locations(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.all_locations() RETURNS TABLE(id integer, street_number integer, street_name character varying, city character varying, state_province character varying, postal_zip character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+	SELECT * FROM locations;
+END;
+$$;
+
+
+ALTER FUNCTION public.all_locations() OWNER TO postgres;
+
+--
+-- TOC entry 237 (class 1255 OID 18158)
+-- Name: all_parts(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.all_parts() RETURNS TABLE(part_number integer, name character varying, description character varying, category character varying, type character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+RETURN QUERY
+SELECT *
+FROM parts;
+END;
+$$;
+
+
+ALTER FUNCTION public.all_parts() OWNER TO postgres;
+
+--
+-- TOC entry 232 (class 1255 OID 18173)
+-- Name: all_shippers(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.all_shippers() RETURNS TABLE(sid integer, name character varying, contact character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+	SELECT *
+	FROM shippers;
+END;
+$$;
+
+
+ALTER FUNCTION public.all_shippers() OWNER TO postgres;
+
+--
+-- TOC entry 233 (class 1255 OID 18145)
+-- Name: all_users(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.all_users() RETURNS TABLE(id integer, first_name character varying, last_name character varying, dob character varying, email character varying, street_number integer, street_name character varying, state_province character varying, postal_zip character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN 
+RETURN QUERY SELECT * FROM users;
+END;
+$$;
+
+
+ALTER FUNCTION public.all_users() OWNER TO postgres;
+
+--
+-- TOC entry 263 (class 1255 OID 18175)
+-- Name: find_video(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.find_video(ppart_number integer) RETURNS TABLE(duration integer, "partPartNumber" integer, url character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+RETURN QUERY
+	SELECT P.duration, P."partPartNumber", P.url 
+	FROM videos AS P
+	WHERE P."partPartNumber" = ppart_number;
+END;
+$$;
+
+
+ALTER FUNCTION public.find_video(ppart_number integer) OWNER TO postgres;
+
+--
+-- TOC entry 260 (class 1255 OID 18167)
+-- Name: location_inventory(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.location_inventory(plid integer) RETURNS TABLE(inventory_id integer, price integer, qty integer, url character varying, "partNumberPartNumber" integer, "locationLid" integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+	SELECT * FROM inventory AS P
+	WHERE P."locationLid" = plid;
+END;
+$$;
+
+
+ALTER FUNCTION public.location_inventory(plid integer) OWNER TO postgres;
+
+--
+-- TOC entry 239 (class 1255 OID 18149)
+-- Name: locations(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.locations(pmid integer) RETURNS TABLE(mid integer, name character varying, website character varying, phone integer, email character varying, store_url character varying, type character varying)
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN 
+    RETURN QUERY 
+        SELECT loc.lid, loc."streetNumber", loc."streetName", loc.city, loc."stateProvince", loc."postalZip" 
+    FROM locations AS loc, merchants AS mer, merch_locations AS merloc
+    WHERE loc.lid = merloc."locationsLid" AND mer.mid = merloc."merchLoactionId" AND mer.mid = pmid;
+    END;
+    $$;
+
+
+ALTER FUNCTION public.locations(pmid integer) OWNER TO postgres;
+
+--
+-- TOC entry 255 (class 1255 OID 18156)
+-- Name: one_location(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.one_location(pmid integer, plid integer) RETURNS TABLE(mid integer, name character varying, website character varying, phone integer, email character varying, store_url character varying, type character varying, lid integer, street_number integer, street_name character varying, city character varying, state_province character varying, postal_zip character varying)
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN 
+    RETURN QUERY 
+   SELECT M.*,L.*
+    FROM merchants AS M
+      INNER JOIN merch_locations AS ML ON ML.mid = M.mid
+      INNER JOIN locations AS L On L.lid = ML.lid
+    WHERE M.mid = pmid AND L.lid = plid;
+    END;
+    $$;
+
+
+ALTER FUNCTION public.one_location(pmid integer, plid integer) OWNER TO postgres;
+
+--
+-- TOC entry 242 (class 1255 OID 18163)
+-- Name: one_location_no_merchant(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.one_location_no_merchant(plid integer) RETURNS TABLE(id integer, street_number integer, street_name character varying, city character varying, state_province character varying, postal_zip character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+	SELECT * FROM locations AS P
+	WHERE p.lid = plid;
+END;
+$$;
+
+
+ALTER FUNCTION public.one_location_no_merchant(plid integer) OWNER TO postgres;
+
+--
+-- TOC entry 238 (class 1255 OID 18160)
+-- Name: one_part(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.one_part(pid integer) RETURNS TABLE(part_number integer, name character varying, description character varying, category character varying, type character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+RETURN QUERY
+SELECT *
+FROM parts AS P
+WHERE p.part_number = pid;
+END;
+$$;
+
+
+ALTER FUNCTION public.one_part(pid integer) OWNER TO postgres;
+
+--
+-- TOC entry 234 (class 1255 OID 18146)
+-- Name: one_users(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.one_users(puser integer) RETURNS TABLE(id integer, first_name character varying, last_name character varying, dob character varying, email character varying, street_number integer, street_name character varying, state_province character varying, postal_zip character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN 
+RETURN QUERY 
+	SELECT * FROM users AS U
+	WHERE U.id = puser;
+END;
+$$;
+
+
+ALTER FUNCTION public.one_users(puser integer) OWNER TO postgres;
+
+--
+-- TOC entry 262 (class 1255 OID 18170)
+-- Name: part_location_search_inventorys(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.part_location_search_inventorys(plid integer, ppart integer) RETURNS TABLE(inventory_id integer, price integer, qty integer, url character varying, "partNumberPartNumber" integer, "locationLid" integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+	SELECT * FROM inventory AS P
+	WHERE p."partNumberPartNumber" = ppart AND P."locationLid" = plid;
+END;
+$$;
+
+
+ALTER FUNCTION public.part_location_search_inventorys(plid integer, ppart integer) OWNER TO postgres;
+
+--
+-- TOC entry 261 (class 1255 OID 18168)
+-- Name: part_search_inventorys(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.part_search_inventorys(ppart integer) RETURNS TABLE(inventory_id integer, price integer, qty integer, url character varying, "partNumberPartNumber" integer, "locationLid" integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+	SELECT * FROM inventory AS P
+	WHERE p."partNumberPartNumber" = ppart;
+END;
+$$;
+
+
+ALTER FUNCTION public.part_search_inventorys(ppart integer) OWNER TO postgres;
+
+--
+-- TOC entry 259 (class 1255 OID 18172)
+-- Name: update_qty(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_qty(plid integer, ppart integer, pqty integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	UPDATE inventory AS P
+	SET qty = pqty
+	WHERE p."partNumberPartNumber" = ppart AND P."locationLid" = plid;
+END;
+$$;
+
+
+ALTER FUNCTION public.update_qty(plid integer, ppart integer, pqty integer) OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 225 (class 1259 OID 17857)
+-- Name:  ships_from; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public." ships_from" (
+    sid integer NOT NULL,
+    lid integer NOT NULL
+);
+
+
+ALTER TABLE public." ships_from" OWNER TO postgres;
+
+--
+-- TOC entry 230 (class 1259 OID 17913)
+-- Name: Watches; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Watches" (
+    user_id integer NOT NULL,
+    video character varying NOT NULL
+);
+
+
+ALTER TABLE public."Watches" OWNER TO postgres;
+
+--
+-- TOC entry 231 (class 1259 OID 18061)
+-- Name: buys_from; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.buys_from (
+    manu_id integer NOT NULL,
+    mid integer NOT NULL
+);
+
+
+ALTER TABLE public.buys_from OWNER TO postgres;
+
+--
+-- TOC entry 211 (class 1259 OID 17765)
+-- Name: inventory; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inventory (
+    inventory_id integer NOT NULL,
+    price integer,
+    qty integer,
+    url character varying,
+    "partNumberPartNumber" integer,
+    "locationLid" integer
+);
+
+
+ALTER TABLE public.inventory OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 17763)
+-- Name: inventory_inventory_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inventory_inventory_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inventory_inventory_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3069 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: inventory_inventory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inventory_inventory_id_seq OWNED BY public.inventory.inventory_id;
+
+
+--
+-- TOC entry 209 (class 1259 OID 17754)
+-- Name: locations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.locations (
+    lid integer NOT NULL,
+    street_number integer,
+    street_name character varying,
+    city character varying,
+    state_province character varying,
+    postal_zip character varying
+);
+
+
+ALTER TABLE public.locations OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 17752)
+-- Name: locations_lid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.locations_lid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.locations_lid_seq OWNER TO postgres;
+
+--
+-- TOC entry 3070 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: locations_lid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.locations_lid_seq OWNED BY public.locations.lid;
+
+
+--
+-- TOC entry 223 (class 1259 OID 17843)
+-- Name: makes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.makes (
+    manu_id integer NOT NULL,
+    part_number integer NOT NULL
+);
+
+
+ALTER TABLE public.makes OWNER TO postgres;
+
+--
+-- TOC entry 203 (class 1259 OID 17721)
+-- Name: manufacturers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.manufacturers (
+    manu_id integer NOT NULL,
+    name character varying NOT NULL,
+    contact character varying
+);
+
+
+ALTER TABLE public.manufacturers OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 17719)
+-- Name: manufacturers_manu_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.manufacturers_manu_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.manufacturers_manu_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3071 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: manufacturers_manu_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.manufacturers_manu_id_seq OWNED BY public.manufacturers.manu_id;
+
+
+--
+-- TOC entry 226 (class 1259 OID 17864)
+-- Name: merch_locations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.merch_locations (
+    mid integer NOT NULL,
+    lid integer NOT NULL
+);
+
+
+ALTER TABLE public.merch_locations OWNER TO postgres;
+
+--
+-- TOC entry 224 (class 1259 OID 17850)
+-- Name: merch_uses; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.merch_uses (
+    sid integer NOT NULL,
+    mid integer NOT NULL
+);
+
+
+ALTER TABLE public.merch_uses OWNER TO postgres;
+
+--
+-- TOC entry 207 (class 1259 OID 17743)
+-- Name: merchants; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.merchants (
+    mid integer NOT NULL,
+    name character varying NOT NULL,
+    website character varying NOT NULL,
+    phone integer NOT NULL,
+    email character varying NOT NULL,
+    store_url character varying NOT NULL,
+    type character varying NOT NULL
+);
+
+
+ALTER TABLE public.merchants OWNER TO postgres;
+
+--
+-- TOC entry 206 (class 1259 OID 17741)
+-- Name: merchants_mid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.merchants_mid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.merchants_mid_seq OWNER TO postgres;
+
+--
+-- TOC entry 3072 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: merchants_mid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.merchants_mid_seq OWNED BY public.merchants.mid;
+
+
+--
+-- TOC entry 228 (class 1259 OID 17892)
+-- Name: part_of; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.part_of (
+    vin integer NOT NULL,
+    part_number integer NOT NULL
+);
+
+
+ALTER TABLE public.part_of OWNER TO postgres;
+
+--
+-- TOC entry 215 (class 1259 OID 17787)
+-- Name: parts; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.parts (
+    part_number integer NOT NULL,
+    name character varying NOT NULL,
+    description character varying,
+    category character varying,
+    type character varying
+);
+
+
+ALTER TABLE public.parts OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1259 OID 17798)
+-- Name: parts_bought; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.parts_bought (
+    history_id integer NOT NULL,
+    "orderNumId" integer,
+    qty integer NOT NULL,
+    "partNumberPartNumber" integer
+);
+
+
+ALTER TABLE public.parts_bought OWNER TO postgres;
+
+--
+-- TOC entry 216 (class 1259 OID 17796)
+-- Name: parts_bought_history_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.parts_bought_history_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.parts_bought_history_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3073 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: parts_bought_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.parts_bought_history_id_seq OWNED BY public.parts_bought.history_id;
+
+
+--
+-- TOC entry 214 (class 1259 OID 17785)
+-- Name: parts_part_number_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.parts_part_number_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.parts_part_number_seq OWNER TO postgres;
+
+--
+-- TOC entry 3074 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: parts_part_number_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.parts_part_number_seq OWNED BY public.parts.part_number;
+
+
+--
+-- TOC entry 220 (class 1259 OID 17816)
+-- Name: purchase_orders; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.purchase_orders (
+    po_number integer NOT NULL,
+    date character varying NOT NULL,
+    "userId" integer
+);
+
+
+ALTER TABLE public.purchase_orders OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 17814)
+-- Name: purchase_orders_po_number_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.purchase_orders_po_number_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.purchase_orders_po_number_seq OWNER TO postgres;
+
+--
+-- TOC entry 3075 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: purchase_orders_po_number_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.purchase_orders_po_number_seq OWNED BY public.purchase_orders.po_number;
+
+
+--
+-- TOC entry 205 (class 1259 OID 17732)
+-- Name: shippers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.shippers (
+    sid integer NOT NULL,
+    name character varying NOT NULL,
+    contact character varying NOT NULL
+);
+
+
+ALTER TABLE public.shippers OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1259 OID 17730)
+-- Name: shippers_sid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.shippers_sid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.shippers_sid_seq OWNER TO postgres;
+
+--
+-- TOC entry 3076 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: shippers_sid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.shippers_sid_seq OWNED BY public.shippers.sid;
+
+
+--
+-- TOC entry 227 (class 1259 OID 17878)
+-- Name: ships_from; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ships_from (
+    lid integer NOT NULL,
+    sid integer NOT NULL
+);
+
+
+ALTER TABLE public.ships_from OWNER TO postgres;
+
+--
+-- TOC entry 222 (class 1259 OID 17827)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    dob character varying,
+    email character varying,
+    street_number integer,
+    street_name character varying,
+    state_province character varying,
+    postal_zip character varying
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 17825)
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3077 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- TOC entry 213 (class 1259 OID 17776)
+-- Name: vehicles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.vehicles (
+    vin integer NOT NULL,
+    make character varying NOT NULL,
+    model character varying NOT NULL,
+    year integer NOT NULL,
+    colour character varying,
+    "trim" character varying,
+    "ownerId" integer
+);
+
+
+ALTER TABLE public.vehicles OWNER TO postgres;
+
+--
+-- TOC entry 212 (class 1259 OID 17774)
+-- Name: vehicles_vin_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.vehicles_vin_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.vehicles_vin_seq OWNER TO postgres;
+
+--
+-- TOC entry 3078 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: vehicles_vin_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.vehicles_vin_seq OWNED BY public.vehicles.vin;
+
+
+--
+-- TOC entry 218 (class 1259 OID 17806)
+-- Name: videos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.videos (
+    duration integer NOT NULL,
+    "partPartNumber" integer,
+    url character varying NOT NULL
+);
+
+
+ALTER TABLE public.videos OWNER TO postgres;
+
+--
+-- TOC entry 229 (class 1259 OID 17906)
+-- Name: watches; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.watches (
+    user_id integer NOT NULL,
+    url character varying NOT NULL
+);
+
+
+ALTER TABLE public.watches OWNER TO postgres;
+
+--
+-- TOC entry 2817 (class 2604 OID 17768)
+-- Name: inventory inventory_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory ALTER COLUMN inventory_id SET DEFAULT nextval('public.inventory_inventory_id_seq'::regclass);
+
+
+--
+-- TOC entry 2816 (class 2604 OID 17757)
+-- Name: locations lid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.locations ALTER COLUMN lid SET DEFAULT nextval('public.locations_lid_seq'::regclass);
+
+
+--
+-- TOC entry 2813 (class 2604 OID 17724)
+-- Name: manufacturers manu_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.manufacturers ALTER COLUMN manu_id SET DEFAULT nextval('public.manufacturers_manu_id_seq'::regclass);
+
+
+--
+-- TOC entry 2815 (class 2604 OID 17746)
+-- Name: merchants mid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merchants ALTER COLUMN mid SET DEFAULT nextval('public.merchants_mid_seq'::regclass);
+
+
+--
+-- TOC entry 2819 (class 2604 OID 17790)
+-- Name: parts part_number; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.parts ALTER COLUMN part_number SET DEFAULT nextval('public.parts_part_number_seq'::regclass);
+
+
+--
+-- TOC entry 2820 (class 2604 OID 17801)
+-- Name: parts_bought history_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.parts_bought ALTER COLUMN history_id SET DEFAULT nextval('public.parts_bought_history_id_seq'::regclass);
+
+
+--
+-- TOC entry 2821 (class 2604 OID 17819)
+-- Name: purchase_orders po_number; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.purchase_orders ALTER COLUMN po_number SET DEFAULT nextval('public.purchase_orders_po_number_seq'::regclass);
+
+
+--
+-- TOC entry 2814 (class 2604 OID 17735)
+-- Name: shippers sid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shippers ALTER COLUMN sid SET DEFAULT nextval('public.shippers_sid_seq'::regclass);
+
+
+--
+-- TOC entry 2822 (class 2604 OID 17830)
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- TOC entry 2818 (class 2604 OID 17779)
+-- Name: vehicles vin; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vehicles ALTER COLUMN vin SET DEFAULT nextval('public.vehicles_vin_seq'::regclass);
+
+
+--
+-- TOC entry 3057 (class 0 OID 17857)
+-- Dependencies: 225
+-- Data for Name:  ships_from; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public." ships_from" (sid, lid) FROM stdin;
+1	2
+1	3
+1	4
+1	5
+3	5
+1	7
+1	22
+3	22
+\.
+
+
+--
+-- TOC entry 3062 (class 0 OID 17913)
+-- Dependencies: 230
+-- Data for Name: Watches; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Watches" (user_id, video) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3063 (class 0 OID 18061)
+-- Dependencies: 231
+-- Data for Name: buys_from; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.buys_from (manu_id, mid) FROM stdin;
+2	1
+1	2
+3	3
+1	3
+3	2
+\.
+
+
+--
+-- TOC entry 3043 (class 0 OID 17765)
+-- Dependencies: 211
+-- Data for Name: inventory; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inventory (inventory_id, price, qty, url, "partNumberPartNumber", "locationLid") FROM stdin;
+124	14	3	carParts.com	13	2
+125	38	1	tomsParts.com	11	14
+168	12245	0	house-of-exotics.com	2	15
+123	12	8	carParts.com	11	2
+\.
+
+
+--
+-- TOC entry 3041 (class 0 OID 17754)
+-- Dependencies: 209
+-- Data for Name: locations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.locations (lid, street_number, street_name, city, state_province, postal_zip) FROM stdin;
+2	12	1google	sfvsd	ab	123ferf
+3	1234	hello	\N	\N	\N
+4	88	0th ave	Calgary	\N	\N
+5	35	35th ave	Vancouver	\N	\N
+6	1234	hello	\N	\N	\N
+7	83	0th ave	Calgary	\N	\N
+8	26	46th ave	Vancouver	\N	\N
+9	1234	hello	\N	\N	\N
+10	63	0th ave	Calgary	\N	\N
+11	90	28th ave	Vancouver	\N	\N
+12	1234	hello	\N	\N	\N
+13	53	0th ave	Calgary	\N	\N
+14	94	36th ave	Vancouver	\N	\N
+15	1234	hello	\N	\N	\N
+16	47	70th ave	Calgary	\N	\N
+17	6	75th ave	Vancouver	\N	\N
+18	1234	hello	\N	\N	\N
+19	3	33th ave	Calgary	\N	\N
+20	98	48th ave	Vancouver	\N	\N
+21	1234	hello	\N	\N	\N
+22	34	37th ave	Calgary	\N	\N
+23	22	23th ave	Vancouver	\N	\N
+24	1234	hello	\N	\N	\N
+25	52	97th ave	Calgary	\N	\N
+26	9	74th ave	Vancouver	\N	\N
+27	1234	hello	\N	\N	\N
+28	48	98th ave	Calgary	\N	\N
+29	56	8th ave	Vancouver	\N	\N
+30	1234	hello	\N	\N	\N
+31	50	50th ave	Calgary	\N	\N
+32	98	57th ave	Vancouver	\N	\N
+33	1234	hello	\N	\N	\N
+34	75	47th ave	Calgary	\N	\N
+35	31	90th ave	Vancouver	\N	\N
+36	1234	hello	\N	\N	\N
+37	96	34th ave	Calgary	\N	\N
+38	58	37th ave	Vancouver	\N	\N
+39	1234	hello	\N	\N	\N
+40	40	58th ave	Calgary	\N	\N
+41	37	70th ave	Vancouver	\N	\N
+42	1234	hello	\N	\N	\N
+43	1	64th ave	Calgary	\N	\N
+44	48	44th ave	Vancouver	\N	\N
+45	1234	hello	\N	\N	\N
+46	22	51th ave	Calgary	\N	\N
+47	10	19th ave	Vancouver	\N	\N
+86	13	46	calgary	\N	T3E 76E
+48	1234	hello	\N	\N	\N
+49	84	21th ave	Calgary	\N	\N
+50	31	28th ave	Vancouver	\N	\N
+51	1234	hello	\N	\N	\N
+52	15	80th ave	Calgary	\N	\N
+53	56	55th ave	Vancouver	\N	\N
+54	1234	hello	\N	\N	\N
+55	89	65th ave	Calgary	\N	\N
+56	66	67th ave	Vancouver	\N	\N
+57	1234	hello	\N	\N	\N
+58	32	21th ave	Calgary	\N	\N
+59	58	47th ave	Vancouver	\N	\N
+60	1234	hello	\N	\N	\N
+61	10	23th ave	Calgary	\N	\N
+62	47	5th ave	Vancouver	\N	\N
+63	1234	hello	\N	\N	\N
+64	10	31th ave	Calgary	\N	\N
+65	40	83th ave	Vancouver	\N	\N
+66	1234	hello	\N	\N	\N
+67	51	94th ave	Calgary	\N	\N
+68	94	32th ave	Vancouver	\N	\N
+69	1234	hello	\N	\N	\N
+70	19	86th ave	Calgary	\N	\N
+71	62	71th ave	Vancouver	\N	\N
+72	1234	hello	\N	\N	\N
+73	47	20th ave	Calgary	\N	\N
+74	42	50th ave	Vancouver	\N	\N
+75	1234	hello	\N	\N	\N
+76	87	39th ave	Calgary	\N	\N
+77	49	67th ave	Vancouver	\N	\N
+78	1234	hello	\N	\N	\N
+79	67	77th ave	Calgary	\N	\N
+80	17	91th ave	Vancouver	\N	\N
+81	1234	hello	\N	\N	\N
+82	37	63th ave	Calgary	\N	\N
+83	82	91th ave	Vancouver	\N	\N
+84	1234	hello	\N	\N	\N
+85	43	18th ave	Calgary	\N	\N
+87	1234	hello	\N	\N	\N
+88	74	55th ave	Calgary	\N	\N
+89	30	18th ave	Vancouver	\N	\N
+90	1234	hello	\N	\N	\N
+91	70	43th ave	Calgary	\N	\N
+92	91	96th ave	Vancouver	\N	\N
+93	1234	hello	\N	\N	\N
+94	79	98th ave	Calgary	\N	\N
+95	51	98th ave	Vancouver	\N	\N
+96	1234	hello	\N	\N	\N
+97	90	48th ave	Calgary	\N	\N
+98	73	23th ave	Vancouver	\N	\N
+99	1234	hello	\N	\N	\N
+100	13	96th ave	Calgary	\N	\N
+101	54	7th ave	Vancouver	\N	\N
+102	1234	hello	\N	\N	\N
+103	40	50th ave	Calgary	\N	\N
+104	2	40th ave	Vancouver	\N	\N
+105	1234	hello	\N	\N	\N
+106	30	73th ave	Calgary	\N	\N
+107	5	34th ave	Vancouver	\N	\N
+4096	13	oakville road	calgary	\N	T3E 76E
+108	1234	hello	\N	\N	\N
+109	36	10th ave	Calgary	\N	\N
+110	46	13th ave	Vancouver	\N	\N
+111	1234	hello	\N	\N	\N
+112	7	62th ave	Calgary	\N	\N
+113	17	84th ave	Vancouver	\N	\N
+114	1234	hello	\N	\N	\N
+115	21	84th ave	Calgary	\N	\N
+116	87	90th ave	Vancouver	\N	\N
+12345	8080	oakland drive	calgary	\N	t2w6h9
+1265	8080	oakland drive	calgary	\N	t2w6h9
+117	1234	hello	\N	\N	\N
+118	26	3th ave	Calgary	\N	\N
+119	16	57th ave	Vancouver	\N	\N
+5096	46	13	calgary	\N	T3E 76E
+120	1234	hello	\N	\N	\N
+121	25	96th ave	Calgary	\N	\N
+122	72	94th ave	Vancouver	\N	\N
+123	1234	hello	\N	\N	\N
+124	55	95th ave	Calgary	\N	\N
+125	21	49th ave	Vancouver	\N	\N
+126	1234	hello	\N	\N	\N
+127	66	92th ave	Calgary	\N	\N
+128	5	90th ave	Vancouver	\N	\N
+129	1234	hello	\N	\N	\N
+130	77	41th ave	Calgary	\N	\N
+131	23	84th ave	Vancouver	\N	\N
+132	1234	hello	\N	\N	\N
+133	11	90th ave	Calgary	\N	\N
+134	19	30th ave	Vancouver	\N	\N
+2096	46	13	calgary	\N	T3E 76E
+296	76	14	calgary	\N	T4E 76E
+\.
+
+
+--
+-- TOC entry 3055 (class 0 OID 17843)
+-- Dependencies: 223
+-- Data for Name: makes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.makes (manu_id, part_number) FROM stdin;
+1	2
+1	4
+1	6
+2	14
+2	16
+2	28
+3	24
+3	26
+3	25
+\.
+
+
+--
+-- TOC entry 3035 (class 0 OID 17721)
+-- Dependencies: 203
+-- Data for Name: manufacturers; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.manufacturers (manu_id, name, contact) FROM stdin;
+1	Bosch	Boschparts@bosch.eu
+2	Hella	Hellaglass@hella.eu
+3	Webber	WebberEngines@webber.co.uk
+4	O34 Motorsport	034motorsportparts@034.com
+\.
+
+
+--
+-- TOC entry 3058 (class 0 OID 17864)
+-- Dependencies: 226
+-- Data for Name: merch_locations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.merch_locations (mid, lid) FROM stdin;
+1	2
+1	86
+1	4096
+1	1265
+1	5096
+3	23
+2	45
+3	2096
+3	296
+\.
+
+
+--
+-- TOC entry 3056 (class 0 OID 17850)
+-- Dependencies: 224
+-- Data for Name: merch_uses; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.merch_uses (sid, mid) FROM stdin;
+1	2
+1	3
+2	2
+3	2
+1	1
+\.
+
+
+--
+-- TOC entry 3039 (class 0 OID 17743)
+-- Dependencies: 207
+-- Data for Name: merchants; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.merchants (mid, name, website, phone, email, store_url, type) FROM stdin;
+1	toms house of parts	tomsparts.com	4039887	heythere@tomsparts.com	tomsparts.com	aftermarket
+2	parts barn	carpsrts.com	4039876	parts@barn.com	parts.com	aftermarket
+3	Audi Calgary	AudiCalgary.ca	1908764	audiparts@audi.com	AudiParts.com	dealer
+\.
+
+
+--
+-- TOC entry 3060 (class 0 OID 17892)
+-- Dependencies: 228
+-- Data for Name: part_of; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.part_of (vin, part_number) FROM stdin;
+12927	1
+12927	2
+12927	3
+12927	13
+2345	34
+\.
+
+
+--
+-- TOC entry 3047 (class 0 OID 17787)
+-- Dependencies: 215
+-- Data for Name: parts; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.parts (part_number, name, description, category, type) FROM stdin;
+1	ECM	\N	\N	\N
+2	ECM	\N	\N	\N
+3	ECM	\N	\N	\N
+4	ECM	\N	\N	\N
+5	ECM	\N	\N	\N
+6	ECM	\N	\N	\N
+7	ECM	\N	\N	\N
+8	ECM	\N	\N	\N
+9	ECM	\N	\N	\N
+10	ECM	\N	\N	\N
+11	ECM	\N	\N	\N
+12	ECM	\N	\N	\N
+13	ECM	\N	\N	\N
+14	ECM	\N	\N	\N
+15	ECM	\N	\N	\N
+16	ECM	\N	\N	\N
+17	ECM	\N	\N	\N
+18	ECM	\N	\N	\N
+19	ECM	\N	\N	\N
+20	ECM	\N	\N	\N
+21	ECM	\N	\N	\N
+22	ECM	\N	\N	\N
+23	ECM	\N	\N	\N
+24	ECM	\N	\N	\N
+25	ECM	\N	\N	\N
+26	ECM	\N	\N	\N
+27	ECM	\N	\N	\N
+28	ECM	\N	\N	\N
+29	ECM	\N	\N	\N
+30	ECM	\N	\N	\N
+31	ECM	\N	\N	\N
+32	"boo"	"boo"	"boo"	""
+33	"boo"	"boo"	"boo"	"boo"
+34	ECM	\N	\N	\N
+35	ECM	\N	\N	\N
+6969	"Radiator"	"Keeps us warm yo"	"Engine"	"OEM"
+36	ECM	\N	\N	\N
+12345	Radiator	Keeps us warm yo	Engine	OEM
+37	ECM	\N	\N	\N
+38	ECM	\N	\N	\N
+39	ECM	\N	\N	\N
+40	ECM	\N	\N	\N
+41	ECM	\N	\N	\N
+42	ECM	\N	\N	\N
+43	ECM	\N	\N	\N
+44	ECM	\N	\N	\N
+45	ECM	\N	\N	\N
+46	ECM	\N	\N	\N
+47	ECM	\N	\N	\N
+48	ECM	\N	\N	\N
+49	ECM	\N	\N	\N
+50	ECM	\N	\N	\N
+51	ECM	\N	\N	\N
+52	ECM	\N	\N	\N
+53	ECM	\N	\N	\N
+54	ECM	\N	\N	\N
+55	ECM	\N	\N	\N
+56	ECM	\N	\N	\N
+57	ECM	\N	\N	\N
+58	ECM	\N	\N	\N
+59	ECM	\N	\N	\N
+60	ECM	\N	\N	\N
+61	ECM	\N	\N	\N
+1234	engine mount	holds the engine to the car	engine	structure
+62	ECM	\N	\N	\N
+63	ECM	\N	\N	\N
+1235	Radiator	Keeps us warm yo	Engine	OEM
+64	ECM	\N	\N	\N
+65	ECM	\N	\N	\N
+66	ECM	\N	\N	\N
+67	ECM	\N	\N	\N
+68	ECM	\N	\N	\N
+69	ECM	\N	\N	\N
+1267	door	Keeps us safe yo	body	OEM
+9587	bumper	Keeps us safe yo	body	OEM
+\.
+
+
+--
+-- TOC entry 3049 (class 0 OID 17798)
+-- Dependencies: 217
+-- Data for Name: parts_bought; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.parts_bought (history_id, "orderNumId", qty, "partNumberPartNumber") FROM stdin;
+1	2	3	23
+3	2	12	32
+2	12	32	4
+\.
+
+
+--
+-- TOC entry 3052 (class 0 OID 17816)
+-- Dependencies: 220
+-- Data for Name: purchase_orders; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.purchase_orders (po_number, date, "userId") FROM stdin;
+1	jan 20/ 2019	2
+2	june 30/2019	1
+\.
+
+
+--
+-- TOC entry 3037 (class 0 OID 17732)
+-- Dependencies: 205
+-- Data for Name: shippers; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shippers (sid, name, contact) FROM stdin;
+1	fedex	orders@fedex.ca
+2	ups	orders@ups.ca
+3	DHL	DHLorders@DHL.eu
+4	CanadaPost	shipping@Canadapost.ca
+\.
+
+
+--
+-- TOC entry 3059 (class 0 OID 17878)
+-- Dependencies: 227
+-- Data for Name: ships_from; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.ships_from (lid, sid) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3054 (class 0 OID 17827)
+-- Dependencies: 222
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, first_name, last_name, dob, email, street_number, street_name, state_province, postal_zip) FROM stdin;
+1	Timber	Saw	\N	\N	\N	\N	\N	\N
+2	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+3	Timber	Saw	\N	\N	\N	\N	\N	\N
+4	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+5	Timber	Saw	\N	\N	\N	\N	\N	\N
+6	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+7	Timber	Saw	\N	\N	\N	\N	\N	\N
+8	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+9	Timber	Saw	\N	\N	\N	\N	\N	\N
+10	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+11	Timber	Saw	\N	\N	\N	\N	\N	\N
+12	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+13	Timber	Saw	\N	\N	\N	\N	\N	\N
+14	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+15	Timber	Saw	\N	\N	\N	\N	\N	\N
+16	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+17	Timber	Saw	\N	\N	\N	\N	\N	\N
+18	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+19	Timber	Saw	\N	\N	\N	\N	\N	\N
+20	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+21	Timber	Saw	\N	\N	\N	\N	\N	\N
+22	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+23	Timber	Saw	\N	\N	\N	\N	\N	\N
+24	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+25	Timber	Saw	\N	\N	\N	\N	\N	\N
+26	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+27	Timber	Saw	\N	\N	\N	\N	\N	\N
+28	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+29	Timber	Saw	\N	\N	\N	\N	\N	\N
+30	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+31	Timber	Saw	\N	\N	\N	\N	\N	\N
+32	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+33	Timber	Saw	\N	\N	\N	\N	\N	\N
+34	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+35	Timber	Saw	\N	\N	\N	\N	\N	\N
+36	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+37	Timber	Saw	\N	\N	\N	\N	\N	\N
+38	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+39	Timber	Saw	\N	\N	\N	\N	\N	\N
+40	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+41	Timber	Saw	\N	\N	\N	\N	\N	\N
+42	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+43	Timber	Saw	\N	\N	\N	\N	\N	\N
+44	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+45	Timber	Saw	\N	\N	\N	\N	\N	\N
+46	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+47	Timber	Saw	\N	\N	\N	\N	\N	\N
+48	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+49	Timber	Saw	\N	\N	\N	\N	\N	\N
+50	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+51	Timber	Saw	\N	\N	\N	\N	\N	\N
+52	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+53	Timber	Saw	\N	\N	\N	\N	\N	\N
+54	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+55	Timber	Saw	\N	\N	\N	\N	\N	\N
+56	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+57	Timber	Saw	\N	\N	\N	\N	\N	\N
+58	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+59	Timber	Saw	\N	\N	\N	\N	\N	\N
+60	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+61	Timber	Saw	\N	\N	\N	\N	\N	\N
+62	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+63	Timber	Saw	\N	\N	\N	\N	\N	\N
+64	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+65	Timber	Saw	\N	\N	\N	\N	\N	\N
+66	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+67	Timber	Saw	\N	\N	\N	\N	\N	\N
+68	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+69	Timber	Saw	\N	\N	\N	\N	\N	\N
+70	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+71	Timber	Saw	\N	\N	\N	\N	\N	\N
+72	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+234	Don	McEachern	\N	Hithere@yahoo.ca	\N	\N	\N	\N
+73	Timber	Saw	\N	\N	\N	\N	\N	\N
+74	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+75	Timber	Saw	\N	\N	\N	\N	\N	\N
+76	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+77	Timber	Saw	\N	\N	\N	\N	\N	\N
+78	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+79	Timber	Saw	\N	\N	\N	\N	\N	\N
+80	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+81	Timber	Saw	\N	\N	\N	\N	\N	\N
+82	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+83	Timber	Saw	\N	\N	\N	\N	\N	\N
+84	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+85	Timber	Saw	\N	\N	\N	\N	\N	\N
+86	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+87	Timber	Saw	\N	\N	\N	\N	\N	\N
+88	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+89	Timber	Saw	\N	\N	\N	\N	\N	\N
+90	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+91	Timber	Saw	\N	\N	\N	\N	\N	\N
+92	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+93	Timber	Saw	\N	\N	\N	\N	\N	\N
+94	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+95	Timber	Saw	\N	\N	\N	\N	\N	\N
+96	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+97	Timber	Saw	\N	\N	\N	\N	\N	\N
+98	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+99	Timber	Saw	\N	\N	\N	\N	\N	\N
+100	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+101	Timber	Saw	\N	\N	\N	\N	\N	\N
+102	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+103	Timber	Saw	\N	\N	\N	\N	\N	\N
+104	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+105	Timber	Saw	\N	\N	\N	\N	\N	\N
+106	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+107	Timber	Saw	\N	\N	\N	\N	\N	\N
+108	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+109	Timber	Saw	\N	\N	\N	\N	\N	\N
+110	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+111	Timber	Saw	\N	\N	\N	\N	\N	\N
+112	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+1234	don	mceachern	\N	me@boyamievergreat.com	\N	\N	\N	\N
+113	Timber	Saw	\N	\N	\N	\N	\N	\N
+114	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+115	Timber	Saw	\N	\N	\N	\N	\N	\N
+116	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+3434	Don	McEachern	\N	Hithere@yahoo.ca	\N	\N	\N	\N
+117	Timber	Saw	\N	\N	\N	\N	\N	\N
+118	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+119	Timber	Saw	\N	\N	\N	\N	\N	\N
+120	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+121	Timber	Saw	\N	\N	\N	\N	\N	\N
+122	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+123	Timber	Saw	\N	\N	\N	\N	\N	\N
+124	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+125	Timber	Saw	\N	\N	\N	\N	\N	\N
+126	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+127	Timber	Saw	\N	\N	\N	\N	\N	\N
+128	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+129	Timber	Saw	\N	\N	\N	\N	\N	\N
+130	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+131	Timber	Saw	\N	\N	\N	\N	\N	\N
+132	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+133	Timber	Saw	\N	\N	\N	\N	\N	\N
+134	Phantom	Assassin	\N	\N	\N	\N	\N	\N
+2434	Don	McEachern	\N	Hithere@yahoo.ca	\N	\N	\N	\N
+434	Don	McEachern	\N	Hithere@yahoo.ca	\N	\N	\N	\N
+\.
+
+
+--
+-- TOC entry 3045 (class 0 OID 17776)
+-- Dependencies: 213
+-- Data for Name: vehicles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.vehicles (vin, make, model, year, colour, "trim", "ownerId") FROM stdin;
+12344567	VW	Passat	1994	black	GL	2
+12927	Ford	f-150	2019	black	Triton	2
+2345	Audi	S4	1993	Pearl	S4	1
+12938	Porsche	911	1971	green	turbo	23
+\.
+
+
+--
+-- TOC entry 3050 (class 0 OID 17806)
+-- Dependencies: 218
+-- Data for Name: videos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.videos (duration, "partPartNumber", url) FROM stdin;
+1234	11	youtube.com/1928cvh27
+1234	20	youtube.com/1928cvwekjbn7
+1234	21	youtube.com//7868cvwekjbn7
+1234	25	youtube.com7868cvwekjbn7
+1234	26	video.com7868cvwekjbn7
+3	14	wwww.hithere
+1234	23	video.com7868ckjbn7
+1234	1	youtube.com7868c
+1234	2	youtube.com78768c
+1234	3	youtube.com78769c
+\.
+
+
+--
+-- TOC entry 3061 (class 0 OID 17906)
+-- Dependencies: 229
+-- Data for Name: watches; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.watches (user_id, url) FROM stdin;
+1	youtube.com/1928cvh27
+\.
+
+
+--
+-- TOC entry 3079 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: inventory_inventory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inventory_inventory_id_seq', 1, false);
+
+
+--
+-- TOC entry 3080 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: locations_lid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.locations_lid_seq', 134, true);
+
+
+--
+-- TOC entry 3081 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: manufacturers_manu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.manufacturers_manu_id_seq', 1, false);
+
+
+--
+-- TOC entry 3082 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: merchants_mid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.merchants_mid_seq', 1, false);
+
+
+--
+-- TOC entry 3083 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: parts_bought_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.parts_bought_history_id_seq', 1, false);
+
+
+--
+-- TOC entry 3084 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: parts_part_number_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.parts_part_number_seq', 69, true);
+
+
+--
+-- TOC entry 3085 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: purchase_orders_po_number_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.purchase_orders_po_number_seq', 1, false);
+
+
+--
+-- TOC entry 3086 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: shippers_sid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.shippers_sid_seq', 1, false);
+
+
+--
+-- TOC entry 3087 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 134, true);
+
+
+--
+-- TOC entry 3088 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: vehicles_vin_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.vehicles_vin_seq', 1, false);
+
+
+--
+-- TOC entry 2858 (class 2606 OID 17861)
+-- Name:  ships_from PK_0e6e3a37d3686a53428d7687723; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public." ships_from"
+    ADD CONSTRAINT "PK_0e6e3a37d3686a53428d7687723" PRIMARY KEY (sid, lid);
+
+
+--
+-- TOC entry 2854 (class 2606 OID 17854)
+-- Name: merch_uses PK_10fac232419a7a1e2126da96f2f; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merch_uses
+    ADD CONSTRAINT "PK_10fac232419a7a1e2126da96f2f" PRIMARY KEY (sid, mid);
+
+
+--
+-- TOC entry 2882 (class 2606 OID 18065)
+-- Name: buys_from PK_2982bce9ccb0ace097f6d32982d; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.buys_from
+    ADD CONSTRAINT "PK_2982bce9ccb0ace097f6d32982d" PRIMARY KEY (manu_id, mid);
+
+
+--
+-- TOC entry 2828 (class 2606 OID 17751)
+-- Name: merchants PK_29b86f038718ac72d76b322129a; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merchants
+    ADD CONSTRAINT "PK_29b86f038718ac72d76b322129a" PRIMARY KEY (mid);
+
+
+--
+-- TOC entry 2850 (class 2606 OID 17847)
+-- Name: makes PK_4844bc8f15aa907cb6e6c738649; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.makes
+    ADD CONSTRAINT "PK_4844bc8f15aa907cb6e6c738649" PRIMARY KEY (manu_id, part_number);
+
+
+--
+-- TOC entry 2874 (class 2606 OID 18121)
+-- Name: watches PK_4d88f4493ba70aa0e13f8062797; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.watches
+    ADD CONSTRAINT "PK_4d88f4493ba70aa0e13f8062797" PRIMARY KEY (user_id, url);
+
+
+--
+-- TOC entry 2824 (class 2606 OID 17729)
+-- Name: manufacturers PK_513abb5cb38e5558dbb089f5c20; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.manufacturers
+    ADD CONSTRAINT "PK_513abb5cb38e5558dbb089f5c20" PRIMARY KEY (manu_id);
+
+
+--
+-- TOC entry 2840 (class 2606 OID 18114)
+-- Name: videos PK_517d52e875e32f23347054eb285; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT "PK_517d52e875e32f23347054eb285" PRIMARY KEY (url);
+
+
+--
+-- TOC entry 2832 (class 2606 OID 17773)
+-- Name: inventory PK_711db979ad954f0ab33e3eea53a; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT "PK_711db979ad954f0ab33e3eea53a" PRIMARY KEY (inventory_id);
+
+
+--
+-- TOC entry 2844 (class 2606 OID 17824)
+-- Name: purchase_orders PK_74065a5d2b8c4c14b8b8fcf0159; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.purchase_orders
+    ADD CONSTRAINT "PK_74065a5d2b8c4c14b8b8fcf0159" PRIMARY KEY (po_number);
+
+
+--
+-- TOC entry 2836 (class 2606 OID 17795)
+-- Name: parts PK_77203ac1fde45166b9fcbd862f0; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.parts
+    ADD CONSTRAINT "PK_77203ac1fde45166b9fcbd862f0" PRIMARY KEY (part_number);
+
+
+--
+-- TOC entry 2834 (class 2606 OID 17784)
+-- Name: vehicles PK_8288ce015b69c5856cf54e07a67; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vehicles
+    ADD CONSTRAINT "PK_8288ce015b69c5856cf54e07a67" PRIMARY KEY (vin);
+
+
+--
+-- TOC entry 2878 (class 2606 OID 18128)
+-- Name: Watches PK_8b9ebb4d5e4d5d4e563220ec2ef; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Watches"
+    ADD CONSTRAINT "PK_8b9ebb4d5e4d5d4e563220ec2ef" PRIMARY KEY (user_id, video);
+
+
+--
+-- TOC entry 2830 (class 2606 OID 17762)
+-- Name: locations PK_99985047aa0954549bb5004515e; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.locations
+    ADD CONSTRAINT "PK_99985047aa0954549bb5004515e" PRIMARY KEY (lid);
+
+
+--
+-- TOC entry 2846 (class 2606 OID 17835)
+-- Name: users PK_a3ffb1c0c8416b9fc6f907b7433; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2866 (class 2606 OID 17882)
+-- Name: ships_from PK_afef4d9b3a655b49c0673a60cfc; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ships_from
+    ADD CONSTRAINT "PK_afef4d9b3a655b49c0673a60cfc" PRIMARY KEY (lid, sid);
+
+
+--
+-- TOC entry 2838 (class 2606 OID 17803)
+-- Name: parts_bought PK_c3679eda8f8cae14fbbe830ae37; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.parts_bought
+    ADD CONSTRAINT "PK_c3679eda8f8cae14fbbe830ae37" PRIMARY KEY (history_id);
+
+
+--
+-- TOC entry 2862 (class 2606 OID 17868)
+-- Name: merch_locations PK_c4e18796384a96c462b705eebd5; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merch_locations
+    ADD CONSTRAINT "PK_c4e18796384a96c462b705eebd5" PRIMARY KEY (mid, lid);
+
+
+--
+-- TOC entry 2826 (class 2606 OID 17740)
+-- Name: shippers PK_c9839bd22227eea09785abbc291; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shippers
+    ADD CONSTRAINT "PK_c9839bd22227eea09785abbc291" PRIMARY KEY (sid);
+
+
+--
+-- TOC entry 2870 (class 2606 OID 17896)
+-- Name: part_of PK_e0ffcfba356e98d6a2d86a15a75; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.part_of
+    ADD CONSTRAINT "PK_e0ffcfba356e98d6a2d86a15a75" PRIMARY KEY (vin, part_number);
+
+
+--
+-- TOC entry 2842 (class 2606 OID 17813)
+-- Name: videos UQ_b0c8a2ab65ed814b5ef421ef73e; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT "UQ_b0c8a2ab65ed814b5ef421ef73e" UNIQUE ("partPartNumber");
+
+
+--
+-- TOC entry 2875 (class 1259 OID 18130)
+-- Name: IDX_08e4a1c74bb149de06957909f5; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_08e4a1c74bb149de06957909f5" ON public."Watches" USING btree (video);
+
+
+--
+-- TOC entry 2859 (class 1259 OID 17869)
+-- Name: IDX_0a7894734a2582acf53366e767; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_0a7894734a2582acf53366e767" ON public.merch_locations USING btree (mid);
+
+
+--
+-- TOC entry 2851 (class 1259 OID 17856)
+-- Name: IDX_135315b867826ac26f5ba4c3e2; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_135315b867826ac26f5ba4c3e2" ON public.merch_uses USING btree (mid);
+
+
+--
+-- TOC entry 2847 (class 1259 OID 17848)
+-- Name: IDX_16131a83a8bdbbb8ee63e87ec9; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_16131a83a8bdbbb8ee63e87ec9" ON public.makes USING btree (manu_id);
+
+
+--
+-- TOC entry 2852 (class 1259 OID 17855)
+-- Name: IDX_1c483c5cd3ca894a879abd33c1; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_1c483c5cd3ca894a879abd33c1" ON public.merch_uses USING btree (sid);
+
+
+--
+-- TOC entry 2855 (class 1259 OID 17863)
+-- Name: IDX_21dfe4edd43e5c199b3e125bdb; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_21dfe4edd43e5c199b3e125bdb" ON public." ships_from" USING btree (lid);
+
+
+--
+-- TOC entry 2879 (class 1259 OID 18067)
+-- Name: IDX_306657274672826d723e81e62e; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_306657274672826d723e81e62e" ON public.buys_from USING btree (mid);
+
+
+--
+-- TOC entry 2867 (class 1259 OID 17898)
+-- Name: IDX_496fe962e726ef5eed49e54d53; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_496fe962e726ef5eed49e54d53" ON public.part_of USING btree (part_number);
+
+
+--
+-- TOC entry 2863 (class 1259 OID 17883)
+-- Name: IDX_566457f0f82600ece200e35419; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_566457f0f82600ece200e35419" ON public.ships_from USING btree (lid);
+
+
+--
+-- TOC entry 2871 (class 1259 OID 17912)
+-- Name: IDX_6a60edeba6e48e32ba6fb629cd; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_6a60edeba6e48e32ba6fb629cd" ON public.watches USING btree (user_id);
+
+
+--
+-- TOC entry 2880 (class 1259 OID 18066)
+-- Name: IDX_6d1a29efe9cb75ab5c231e22a1; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_6d1a29efe9cb75ab5c231e22a1" ON public.buys_from USING btree (manu_id);
+
+
+--
+-- TOC entry 2864 (class 1259 OID 17884)
+-- Name: IDX_7564fca90452f9699ab69d8324; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_7564fca90452f9699ab69d8324" ON public.ships_from USING btree (sid);
+
+
+--
+-- TOC entry 2876 (class 1259 OID 17918)
+-- Name: IDX_8fa88c12e7fee7788b2a1ab47b; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_8fa88c12e7fee7788b2a1ab47b" ON public."Watches" USING btree (user_id);
+
+
+--
+-- TOC entry 2856 (class 1259 OID 17862)
+-- Name: IDX_943c66672eed3dafc9bab2580a; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_943c66672eed3dafc9bab2580a" ON public." ships_from" USING btree (sid);
+
+
+--
+-- TOC entry 2848 (class 1259 OID 17849)
+-- Name: IDX_9bc3344db6c46c664e05975421; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_9bc3344db6c46c664e05975421" ON public.makes USING btree (part_number);
+
+
+--
+-- TOC entry 2860 (class 1259 OID 17870)
+-- Name: IDX_c1788da71ce5d359f5b9fd92d7; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_c1788da71ce5d359f5b9fd92d7" ON public.merch_locations USING btree (lid);
+
+
+--
+-- TOC entry 2872 (class 1259 OID 18129)
+-- Name: IDX_c353082de92e4c0adedea964b0; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_c353082de92e4c0adedea964b0" ON public.watches USING btree (url);
+
+
+--
+-- TOC entry 2868 (class 1259 OID 17897)
+-- Name: IDX_d6f050f6a9ece42abad2c6e910; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IDX_d6f050f6a9ece42abad2c6e910" ON public.part_of USING btree (vin);
+
+
+--
+-- TOC entry 2905 (class 2606 OID 18136)
+-- Name: Watches FK_08e4a1c74bb149de06957909f52; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Watches"
+    ADD CONSTRAINT "FK_08e4a1c74bb149de06957909f52" FOREIGN KEY (video) REFERENCES public.videos(url) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2896 (class 2606 OID 17980)
+-- Name: merch_locations FK_0a7894734a2582acf53366e767a; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merch_locations
+    ADD CONSTRAINT "FK_0a7894734a2582acf53366e767a" FOREIGN KEY (mid) REFERENCES public.merchants(mid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2893 (class 2606 OID 17965)
+-- Name: merch_uses FK_135315b867826ac26f5ba4c3e27; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merch_uses
+    ADD CONSTRAINT "FK_135315b867826ac26f5ba4c3e27" FOREIGN KEY (mid) REFERENCES public.merchants(mid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2890 (class 2606 OID 17950)
+-- Name: makes FK_16131a83a8bdbbb8ee63e87ec93; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.makes
+    ADD CONSTRAINT "FK_16131a83a8bdbbb8ee63e87ec93" FOREIGN KEY (manu_id) REFERENCES public.manufacturers(manu_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2889 (class 2606 OID 17935)
+-- Name: purchase_orders FK_19c934e5dc27110448bc8e7cbd8; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.purchase_orders
+    ADD CONSTRAINT "FK_19c934e5dc27110448bc8e7cbd8" FOREIGN KEY ("userId") REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2892 (class 2606 OID 17960)
+-- Name: merch_uses FK_1c483c5cd3ca894a879abd33c11; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merch_uses
+    ADD CONSTRAINT "FK_1c483c5cd3ca894a879abd33c11" FOREIGN KEY (sid) REFERENCES public.shippers(sid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2895 (class 2606 OID 17975)
+-- Name:  ships_from FK_21dfe4edd43e5c199b3e125bdb9; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public." ships_from"
+    ADD CONSTRAINT "FK_21dfe4edd43e5c199b3e125bdb9" FOREIGN KEY (lid) REFERENCES public.locations(lid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2907 (class 2606 OID 18093)
+-- Name: buys_from FK_306657274672826d723e81e62ef; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.buys_from
+    ADD CONSTRAINT "FK_306657274672826d723e81e62ef" FOREIGN KEY (mid) REFERENCES public.merchants(mid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2901 (class 2606 OID 18025)
+-- Name: part_of FK_496fe962e726ef5eed49e54d536; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.part_of
+    ADD CONSTRAINT "FK_496fe962e726ef5eed49e54d536" FOREIGN KEY (part_number) REFERENCES public.parts(part_number) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2898 (class 2606 OID 18000)
+-- Name: ships_from FK_566457f0f82600ece200e354196; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ships_from
+    ADD CONSTRAINT "FK_566457f0f82600ece200e354196" FOREIGN KEY (lid) REFERENCES public.locations(lid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2886 (class 2606 OID 18078)
+-- Name: parts_bought FK_5e02c747c9cf4101ab55cf89e9e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.parts_bought
+    ADD CONSTRAINT "FK_5e02c747c9cf4101ab55cf89e9e" FOREIGN KEY ("partNumberPartNumber") REFERENCES public.parts(part_number);
+
+
+--
+-- TOC entry 2902 (class 2606 OID 18045)
+-- Name: watches FK_6a60edeba6e48e32ba6fb629cd1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.watches
+    ADD CONSTRAINT "FK_6a60edeba6e48e32ba6fb629cd1" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2906 (class 2606 OID 18088)
+-- Name: buys_from FK_6d1a29efe9cb75ab5c231e22a10; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.buys_from
+    ADD CONSTRAINT "FK_6d1a29efe9cb75ab5c231e22a10" FOREIGN KEY (manu_id) REFERENCES public.manufacturers(manu_id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2899 (class 2606 OID 18005)
+-- Name: ships_from FK_7564fca90452f9699ab69d8324b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ships_from
+    ADD CONSTRAINT "FK_7564fca90452f9699ab69d8324b" FOREIGN KEY (sid) REFERENCES public.shippers(sid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2887 (class 2606 OID 17925)
+-- Name: parts_bought FK_8e07352fdeccc3521e6ade6fd70; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.parts_bought
+    ADD CONSTRAINT "FK_8e07352fdeccc3521e6ade6fd70" FOREIGN KEY ("orderNumId") REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2904 (class 2606 OID 18050)
+-- Name: Watches FK_8fa88c12e7fee7788b2a1ab47ba; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Watches"
+    ADD CONSTRAINT "FK_8fa88c12e7fee7788b2a1ab47ba" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2884 (class 2606 OID 18098)
+-- Name: inventory FK_9435cbc9e6a6306645904b0a1db; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT "FK_9435cbc9e6a6306645904b0a1db" FOREIGN KEY ("locationLid") REFERENCES public.locations(lid);
+
+
+--
+-- TOC entry 2894 (class 2606 OID 17970)
+-- Name:  ships_from FK_943c66672eed3dafc9bab2580a6; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public." ships_from"
+    ADD CONSTRAINT "FK_943c66672eed3dafc9bab2580a6" FOREIGN KEY (sid) REFERENCES public.shippers(sid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2891 (class 2606 OID 17955)
+-- Name: makes FK_9bc3344db6c46c664e05975421b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.makes
+    ADD CONSTRAINT "FK_9bc3344db6c46c664e05975421b" FOREIGN KEY (part_number) REFERENCES public.parts(part_number) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2888 (class 2606 OID 18083)
+-- Name: videos FK_b0c8a2ab65ed814b5ef421ef73e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT "FK_b0c8a2ab65ed814b5ef421ef73e" FOREIGN KEY ("partPartNumber") REFERENCES public.parts(part_number);
+
+
+--
+-- TOC entry 2885 (class 2606 OID 17920)
+-- Name: vehicles FK_c0a0d32b2ae04801d6e5b9e5c80; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vehicles
+    ADD CONSTRAINT "FK_c0a0d32b2ae04801d6e5b9e5c80" FOREIGN KEY ("ownerId") REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2897 (class 2606 OID 17985)
+-- Name: merch_locations FK_c1788da71ce5d359f5b9fd92d77; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.merch_locations
+    ADD CONSTRAINT "FK_c1788da71ce5d359f5b9fd92d77" FOREIGN KEY (lid) REFERENCES public.locations(lid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2903 (class 2606 OID 18131)
+-- Name: watches FK_c353082de92e4c0adedea964b07; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.watches
+    ADD CONSTRAINT "FK_c353082de92e4c0adedea964b07" FOREIGN KEY (url) REFERENCES public.videos(url) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2900 (class 2606 OID 18020)
+-- Name: part_of FK_d6f050f6a9ece42abad2c6e9107; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.part_of
+    ADD CONSTRAINT "FK_d6f050f6a9ece42abad2c6e9107" FOREIGN KEY (vin) REFERENCES public.vehicles(vin) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2883 (class 2606 OID 18073)
+-- Name: inventory FK_ea8cdb5f0563b8e1b695607a04b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT "FK_ea8cdb5f0563b8e1b695607a04b" FOREIGN KEY ("partNumberPartNumber") REFERENCES public.parts(part_number);
+
+
+-- Completed on 2020-04-15 20:33:45
+
+--
+-- PostgreSQL database dump complete
+--
+
